@@ -1,5 +1,10 @@
 # Changelog
 
+#### Unreleased
+
+ * Added Makefile with common development targets
+ * Added CLAUDE.md documentation for Claude Code integration
+
 #### v0.9.0.1
 
  * Bugfix: Fix crash when using the tags drawer (Issue #856)
