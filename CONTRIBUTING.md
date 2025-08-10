@@ -133,6 +133,12 @@ make build-debug
 # Run tests
 make test
 
+# Code quality targets
+make format              # Format Java and XML code
+make format-check        # Check code formatting
+make checkstyle          # Run Java linter
+make check               # Run all checks (lint + checkstyle + format + tests)
+
 # Install debug APK to connected device
 make install-debug
 

@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.application'
+    id 'com.diffplug.spotless' version '6.25.0'
+    id 'checkstyle'
 }
 
 android {
@@ -90,4 +92,46 @@ dependencies {
 
     androidTestImplementation "androidx.test.espresso:espresso-core:3.3.0"
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+}
+
+// Code formatting and linting configuration
+spotless {
+    java {
+        target 'src/**/*.java'
+        googleJavaFormat('1.17.0').aosp().reflowLongStrings()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+        indentWithSpaces(4)
+    }
+    
+    format 'xml', {
+        target 'src/**/*.xml'
+        trimTrailingWhitespace()
+        indentWithSpaces(4)
+        endWithNewline()
+    }
+    
+    format 'misc', {
+        target '*.gradle', '*.md', '.gitignore'
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
+}
+
+// Checkstyle configuration
+checkstyle {
+    toolVersion = '10.12.4'
+    configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+tasks.register('checkstyleMain', Checkstyle) {
+    source 'src/main/java'
+    include '**/*.java'
+    classpath = files()
+    reports {
+        xml.required = true
+        html.required = true
+    }
 }
