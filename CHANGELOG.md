@@ -4,6 +4,7 @@
 
  * Added Makefile with common development targets
  * Added CLAUDE.md documentation for Claude Code integration
+ * Added CONTRIBUTING.md
 
 #### v0.9.0.1
 
