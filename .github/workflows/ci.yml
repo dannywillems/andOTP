@@ -19,7 +19,7 @@ jobs:
       matrix:
         java-version: [17, 21]
       fail-fast: false
-    
+
     env:
       GRADLE_OPTS: -Dorg.gradle.daemon=false
       GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
