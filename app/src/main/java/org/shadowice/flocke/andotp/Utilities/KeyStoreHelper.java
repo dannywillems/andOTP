@@ -27,9 +27,6 @@ import android.os.Build;
 import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
-
-import org.shadowice.flocke.andotp.R;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -41,9 +38,9 @@ import java.security.ProviderException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
 import javax.crypto.SecretKey;
 import javax.security.auth.x500.X500Principal;
+import org.shadowice.flocke.andotp.R;
 
 public class KeyStoreHelper {
 
@@ -66,28 +63,33 @@ public class KeyStoreHelper {
         final KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
         keyStore.load(null);
 
-        if (! keyStore.containsAlias(alias)) {
+        if (!keyStore.containsAlias(alias)) {
             final Calendar start = new GregorianCalendar();
             final Calendar end = new GregorianCalendar();
             end.add(Calendar.YEAR, 100);
 
             AlgorithmParameterSpec spec;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                spec = new KeyGenParameterSpec.Builder(alias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                        .setCertificateSubject(new X500Principal("CN=" + alias))
-                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
-                        .setCertificateSerialNumber(BigInteger.ONE)
-                        .setCertificateNotBefore(start.getTime())
-                        .setCertificateNotAfter(end.getTime())
-                        .build();
+                spec =
+                        new KeyGenParameterSpec.Builder(
+                                        alias,
+                                        KeyProperties.PURPOSE_ENCRYPT
+                                                | KeyProperties.PURPOSE_DECRYPT)
+                                .setCertificateSubject(new X500Principal("CN=" + alias))
+                                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+                                .setCertificateSerialNumber(BigInteger.ONE)
+                                .setCertificateNotBefore(start.getTime())
+                                .setCertificateNotAfter(end.getTime())
+                                .build();
             } else {
-                spec = new KeyPairGeneratorSpec.Builder(context)
-                        .setAlias(alias)
-                        .setSubject(new X500Principal("CN=" + alias))
-                        .setSerialNumber(BigInteger.ONE)
-                        .setStartDate(start.getTime())
-                        .setEndDate(end.getTime())
-                        .build();
+                spec =
+                        new KeyPairGeneratorSpec.Builder(context)
+                                .setAlias(alias)
+                                .setSubject(new X500Principal("CN=" + alias))
+                                .setSerialNumber(BigInteger.ONE)
+                                .setStartDate(start.getTime())
+                                .setEndDate(end.getTime())
+                                .build();
             }
 
             KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
@@ -96,25 +98,36 @@ public class KeyStoreHelper {
             gen.generateKeyPair();
         }
 
-        final KeyStore.PrivateKeyEntry entry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
+        final KeyStore.PrivateKeyEntry entry =
+                (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
 
         if (entry != null)
             return new KeyPair(entry.getCertificate().getPublicKey(), entry.getPrivateKey());
-        else
-            return null;
+        else return null;
     }
 
     public static SecretKey loadEncryptionKeyFromKeyStore(Context context, boolean failSilent) {
         SecretKey encKey = null;
 
         try {
-            KeyPair pair = KeyStoreHelper.loadOrGenerateAsymmetricKeyPair(context, Constants.KEYSTORE_ALIAS_WRAPPING);
+            KeyPair pair =
+                    KeyStoreHelper.loadOrGenerateAsymmetricKeyPair(
+                            context, Constants.KEYSTORE_ALIAS_WRAPPING);
             if (pair != null)
-                encKey = EncryptionHelper.loadOrGenerateWrappedKey(new File(context.getFilesDir() + "/" + Constants.FILENAME_ENCRYPTED_KEY), pair);
+                encKey =
+                        EncryptionHelper.loadOrGenerateWrappedKey(
+                                new File(
+                                        context.getFilesDir()
+                                                + "/"
+                                                + Constants.FILENAME_ENCRYPTED_KEY),
+                                pair);
         } catch (GeneralSecurityException | IOException | ProviderException e) {
             e.printStackTrace();
-            if (! failSilent)
-                UIHelper.showGenericDialog(context, R.string.dialog_title_keystore_error, R.string.dialog_msg_keystore_error);
+            if (!failSilent)
+                UIHelper.showGenericDialog(
+                        context,
+                        R.string.dialog_title_keystore_error,
+                        R.string.dialog_msg_keystore_error);
         }
 
         return encKey;

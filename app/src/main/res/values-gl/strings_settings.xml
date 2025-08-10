@@ -61,7 +61,7 @@
     <string name="settings_desc_panic">Escoller que facer cando se recibe unha ameaza de seguridade</string>
     <string name="settings_desc_relock_screen_off">Require autenticación depois de que a pantalla
         se apague</string>
-    <string name="settings_desc_relock_background">Solicitar autenticación após a app foi enviada ao 
+    <string name="settings_desc_relock_background">Solicitar autenticación após a app foi enviada ao
         segundo plano (ex. premendo botón inicio)</string>
     <string name="settings_desc_auth_inactivity">Solicitar autenticación após o dispositivo quedou
         inactivo</string>
@@ -132,7 +132,7 @@ e un contrasinal para activar esta opción</string>
     <string name="settings_dialog_title_error">Erro</string>
     <string name="settings_dialog_title_clear_keystore">Baleirar a KeyStore?</string>
     <string name="settings_dialog_title_android_sync">Android sync</string>
-    <string name="settings_dialog_msg_encryption_change">andOTP intentará agora cambiar o cifrado 
+    <string name="settings_dialog_msg_encryption_change">andOTP intentará agora cambiar o cifrado
         da base de datos. En caso de fallo restaurarase unha copia interna e o cifrado permanecerá
         sen cambios.\n\n<b>Porén, sempre é boa idea ter copias de apoio por se algo terrible acontece!</b></string>
     <string name="settings_dialog_msg_auth_invalid_with_encryption">Só podes utilizar Contrasinal ou PIN

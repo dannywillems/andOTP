@@ -25,7 +25,6 @@ package org.shadowice.flocke.andotp.Receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-
 import org.shadowice.flocke.andotp.Utilities.Settings;
 
 public abstract class BackupBroadcastReceiver extends BroadcastReceiver {

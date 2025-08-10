@@ -26,11 +26,6 @@ package org.shadowice.flocke.andotp.Utilities;
 import android.app.backup.BackupManager;
 import android.content.Context;
 import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.shadowice.flocke.andotp.Database.Entry;
-import org.shadowice.flocke.andotp.R;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -38,8 +33,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-
 import javax.crypto.SecretKey;
+import org.json.JSONArray;
+import org.shadowice.flocke.andotp.Database.Entry;
+import org.shadowice.flocke.andotp.R;
 
 public class DatabaseHelper {
 
@@ -52,8 +49,7 @@ public class DatabaseHelper {
         dbBackup.delete();
     }
 
-    private static void copyFile(File src, File dst)
-        throws IOException {
+    private static void copyFile(File src, File dst) throws IOException {
         try (InputStream in = new FileInputStream(src)) {
             try (OutputStream out = new FileOutputStream(dst)) {
                 byte[] buffer = new byte[1024];
@@ -96,7 +92,8 @@ public class DatabaseHelper {
     }
 
     /* Database functions */
-    public static boolean saveDatabase(Context context, ArrayList<Entry> entries, SecretKey encryptionKey) {
+    public static boolean saveDatabase(
+            Context context, ArrayList<Entry> entries, SecretKey encryptionKey) {
         if (encryptionKey == null) {
             Toast.makeText(context, R.string.toast_encryption_key_empty, Toast.LENGTH_LONG).show();
             return false;
@@ -108,7 +105,8 @@ public class DatabaseHelper {
             synchronized (DatabaseHelper.DatabaseFileLock) {
                 byte[] data = EncryptionHelper.encrypt(encryptionKey, jsonString.getBytes());
 
-                FileHelper.writeBytesToFile(new File(context.getFilesDir() + "/" + Constants.FILENAME_DATABASE), data);
+                FileHelper.writeBytesToFile(
+                        new File(context.getFilesDir() + "/" + Constants.FILENAME_DATABASE), data);
             }
         } catch (Exception error) {
             error.printStackTrace();
@@ -127,7 +125,12 @@ public class DatabaseHelper {
         if (encryptionKey != null) {
             try {
                 synchronized (DatabaseHelper.DatabaseFileLock) {
-                    byte[] data = FileHelper.readFileToBytes(new File(context.getFilesDir() + "/" + Constants.FILENAME_DATABASE));
+                    byte[] data =
+                            FileHelper.readFileToBytes(
+                                    new File(
+                                            context.getFilesDir()
+                                                    + "/"
+                                                    + Constants.FILENAME_DATABASE));
                     data = EncryptionHelper.decrypt(encryptionKey, data);
 
                     entries = stringToEntries(new String(data));
@@ -147,7 +150,7 @@ public class DatabaseHelper {
     public static String entriesToString(ArrayList<Entry> entries) {
         JSONArray json = new JSONArray();
 
-        for(Entry e: entries){
+        for (Entry e : entries) {
             try {
                 json.put(e.toJSON());
             } catch (Exception error) {

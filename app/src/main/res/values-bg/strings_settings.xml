@@ -55,7 +55,7 @@
     <string name="settings_title_enable_android_backup_service">Включване на Android синхронизация</string>
     <string name="settings_title_clear_keystore">Изчисване на Хранилището за ключове на Android</string>
     <!-- Descriptions -->
-    <string name="settings_desc_tap_to_reveal">Скриване на OTP токените по подразбиране, необходимо е да се 
+    <string name="settings_desc_tap_to_reveal">Скриване на OTP токените по подразбиране, необходимо е да се
         показват ръчно</string>
     <string name="settings_desc_tap_to_reveal_timeout">Изберете времето (в секунди), след което показаните токените
        да се скрият автоматично отново</string>
@@ -88,7 +88,7 @@
     <string name="settings_desc_hide_issuer">Hides issuer label on each card</string>
     <string name="settings_desc_backup_append_date">Добавете текущата дата и час към предложеното
          име на архивното копие</string>
-    <string name="settings_desc_backup_ask">Попитайте за името на файла всеки път, когато се създаде или възстановява 
+    <string name="settings_desc_backup_ask">Попитайте за името на файла всеки път, когато се създаде или възстановява
        резервно копие
        </string>
     <string name="settings_desc_backup_location">Choose a default backup location</string>
@@ -119,7 +119,7 @@
       премахнете паролата, изключете Удостоверяването!</string>
     <string name="settings_toast_encryption_changing">Опит за промяна на криптирането на базата данни.
          Моля Изчакайте!</string>
-    <string name="settings_toast_encryption_change_success">Успешно променихте криптирането на 
+    <string name="settings_toast_encryption_change_success">Успешно променихте криптирането на
        базата данни!</string>
     <string name="settings_toast_encryption_change_failed">Промяната на криптирането на базата данни не бе успешно,
          връщане в първоначално състояние!</string>

@@ -132,12 +132,12 @@
     <string name="settings_dialog_title_clear_keystore">Очистити KeyStore?</string>
     <string name="settings_dialog_title_android_sync">Синхронізація Android</string>
     <string name="settings_dialog_msg_encryption_change">Зараз andOTP спробує змінити тип шифрування
-        бази даних. У випадку невдачі - внутрішня резервна копія бази даних з її типом шифрування буде         
-        відновлена.\n\n<b>Проте, завжди потрібно мати резервну копію, якщо станеться 
+        бази даних. У випадку невдачі - внутрішня резервна копія бази даних з її типом шифрування буде
+        відновлена.\n\n<b>Проте, завжди потрібно мати резервну копію, якщо станеться
         щось кепське!</b></string>
     <string name="settings_dialog_msg_auth_invalid_with_encryption">Ви можете використовувати пароль або PIN-код тільки тоді, коли
         для шифрування бази даних встановлено значення \"Пароль / PIN-код\"!</string>
-    <string name="settings_dialog_msg_encryption_invalid_with_auth">Спочатку необхідно встановити 
+    <string name="settings_dialog_msg_encryption_invalid_with_auth">Спочатку необхідно встановити
         автентифікацію по \"Пароль\" або \"PIN-код\"!</string>
     <string name="settings_dialog_msg_encryption_invalid_without_credentials">Щоб змінити тип шифрування,
         спочатку необхідно встановити пароль або PIN-код!</string>

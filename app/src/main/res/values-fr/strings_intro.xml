@@ -20,7 +20,7 @@
         des solutions de sauvegarde externes (comme Titanium) et est bien moins propice aux erreurs que le KeyStore.
         Cependant, vous devrez saisir vos identifiants à chaque lancement de <b>andOTP</b>.</string>
     <string name="intro_slide3_desc_keystore">Ici vous pouvez définir une authentification pour verrouiller
-        <b>andOTP</b>. Puisque vous avez choisi le <b>KeyStore Android</b> comme méthode de chiffrement, ceci est 
+        <b>andOTP</b>. Puisque vous avez choisi le <b>KeyStore Android</b> comme méthode de chiffrement, ceci est
         optionnel.</string>
     <string name="intro_slide3_desc_password">Ici vous pouvez définir une authentification pour verrouiller
         <b>andOTP</b>. Puisque vous avez choisi un <b>mot de passe / code PIN</b> comme méthode de chiffrement, vous devez

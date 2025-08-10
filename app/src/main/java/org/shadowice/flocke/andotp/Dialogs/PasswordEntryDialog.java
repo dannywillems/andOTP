@@ -1,11 +1,6 @@
 package org.shadowice.flocke.andotp.Dialogs;
 
 import android.content.Context;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-
-import androidx.appcompat.app.AppCompatDialog;
-
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -15,7 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
+import androidx.appcompat.app.AppCompatDialog;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import org.shadowice.flocke.andotp.R;
 import org.shadowice.flocke.andotp.Utilities.ConfirmedPasswordTransformationHelper;
 import org.shadowice.flocke.andotp.Utilities.Constants;
@@ -23,9 +20,12 @@ import org.shadowice.flocke.andotp.Utilities.EditorActionHelper;
 import org.shadowice.flocke.andotp.Utilities.Tools;
 
 public class PasswordEntryDialog extends AppCompatDialog
-    implements View.OnClickListener, TextWatcher, TextView.OnEditorActionListener {
+        implements View.OnClickListener, TextWatcher, TextView.OnEditorActionListener {
 
-    public enum Mode { ENTER, UPDATE }
+    public enum Mode {
+        ENTER,
+        UPDATE
+    }
 
     public interface PasswordEnteredCallback {
         void onPasswordEntered(String newPassword);
@@ -39,7 +39,12 @@ public class PasswordEntryDialog extends AppCompatDialog
     private final Button okButton;
     private final TextView tooShortWarning;
 
-    public PasswordEntryDialog(Context context, Mode newMode, boolean blockAccessibility, boolean blockAutofill, PasswordEnteredCallback newCallback) {
+    public PasswordEntryDialog(
+            Context context,
+            Mode newMode,
+            boolean blockAccessibility,
+            boolean blockAutofill,
+            PasswordEnteredCallback newCallback) {
         super(context, Tools.getThemeResource(context, R.attr.dialogTheme));
 
         setTitle(R.string.dialog_title_enter_password);
@@ -49,16 +54,22 @@ public class PasswordEntryDialog extends AppCompatDialog
         passwordInput = findViewById(R.id.passwordInput);
         passwordConfirm = findViewById(R.id.passwordConfirm);
         tooShortWarning = findViewById(R.id.tooShortWarning);
-        tooShortWarning.setText(getContext().getString(R.string.settings_label_short_password, Constants.AUTH_MIN_PASSWORD_LENGTH));
+        tooShortWarning.setText(
+                getContext()
+                        .getString(
+                                R.string.settings_label_short_password,
+                                Constants.AUTH_MIN_PASSWORD_LENGTH));
         ConfirmedPasswordTransformationHelper.setup(passwordLayout, passwordInput, passwordConfirm);
 
         if (blockAccessibility) {
-            passwordLayout.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+            passwordLayout.setImportantForAccessibility(
+                    View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
             passwordConfirm.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && blockAutofill) {
-            passwordLayout.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
+            passwordLayout.setImportantForAutofill(
+                    View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
             passwordConfirm.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
@@ -94,15 +105,19 @@ public class PasswordEntryDialog extends AppCompatDialog
         if (passwordInput.getEditableText().length() >= Constants.AUTH_MIN_PASSWORD_LENGTH) {
             tooShortWarning.setVisibility(View.GONE);
 
-            okButton.setEnabled(dialogMode == Mode.ENTER || TextUtils.equals(passwordInput.getEditableText(), passwordConfirm.getEditableText()));
-        }
-        else {
+            okButton.setEnabled(
+                    dialogMode == Mode.ENTER
+                            || TextUtils.equals(
+                                    passwordInput.getEditableText(),
+                                    passwordConfirm.getEditableText()));
+        } else {
             tooShortWarning.setVisibility(View.VISIBLE);
             okButton.setEnabled(false);
         }
     }
 
     public void afterTextChanged(Editable s) {}
+
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
     @Override
@@ -120,10 +135,9 @@ public class PasswordEntryDialog extends AppCompatDialog
     }
 
     // View.OnClickListener
-    public void onClick(View view)  {
+    public void onClick(View view) {
         if (view.getId() == R.id.buttonOk) {
-            if (callback != null)
-                callback.onPasswordEntered(passwordInput.getText().toString());
+            if (callback != null) callback.onPasswordEntered(passwordInput.getText().toString());
         }
 
         dismiss();

@@ -22,6 +22,10 @@
 
 package org.shadowice.flocke.andotp.Utilities;
 
+import static org.shadowice.flocke.andotp.Utilities.Constants.AuthMethod;
+import static org.shadowice.flocke.andotp.Utilities.Constants.EncryptionType;
+import static org.shadowice.flocke.andotp.Utilities.Constants.SortMode;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -29,10 +33,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Base64;
-
-import org.shadowice.flocke.andotp.Preferences.CredentialsPreference;
-import org.shadowice.flocke.andotp.R;
-
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -44,14 +44,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
-import static org.shadowice.flocke.andotp.Utilities.Constants.AuthMethod;
-import static org.shadowice.flocke.andotp.Utilities.Constants.EncryptionType;
-import static org.shadowice.flocke.andotp.Utilities.Constants.SortMode;
+import org.shadowice.flocke.andotp.Preferences.CredentialsPreference;
+import org.shadowice.flocke.andotp.R;
 
 public class Settings {
-    private static final List<String> newLangs = Arrays.asList("ar",    "bg",    "ca",    "cs",    "de",    "el",    "en",    "es",    "fa",    "fr",    "gl",    "hi",    "hu",    "it",    "ja",    "nl",    "pl",    "pt_BR", "ru",    "sl",    "sv",    "tr",    "uk",    "zh_CN", "zh_TW");
-    private static final List<String> oldLangs = Arrays.asList("ar_SA", "bg_BG", "ca_ES", "cs_CZ", "de_DE", "el_GR", "en_US", "es_ES", "fa_IR", "fr_FR", "gl_ES", "hi_IN", "hu_HU", "it_IT", "ja_JP", "nl_NL", "pl_PL", "pt_BR", "ru_RU", "sl_SI", "sv_SE", "tr_TR", "uk_UA", "zh_CN", "zh_TW");
+    private static final List<String> newLangs =
+            Arrays.asList(
+                    "ar", "bg", "ca", "cs", "de", "el", "en", "es", "fa", "fr", "gl", "hi", "hu",
+                    "it", "ja", "nl", "pl", "pt_BR", "ru", "sl", "sv", "tr", "uk", "zh_CN",
+                    "zh_TW");
+    private static final List<String> oldLangs =
+            Arrays.asList(
+                    "ar_SA", "bg_BG", "ca_ES", "cs_CZ", "de_DE", "el_GR", "en_US", "es_ES", "fa_IR",
+                    "fr_FR", "gl_ES", "hi_IN", "hu_HU", "it_IT", "ja_JP", "nl_NL", "pl_PL", "pt_BR",
+                    "ru_RU", "sl_SI", "sv_SE", "tr_TR", "uk_UA", "zh_CN", "zh_TW");
 
     private final Context context;
     private final SharedPreferences settings;
@@ -77,22 +83,25 @@ public class Settings {
         if (settings.contains(getResString(R.string.settings_key_locale))) {
             String lang = getString(R.string.settings_key_locale, R.string.settings_default_lang);
 
-            if (oldLangs.contains(lang))
-                setLocale(newLangs.get(oldLangs.indexOf(lang)));
+            if (oldLangs.contains(lang)) setLocale(newLangs.get(oldLangs.indexOf(lang)));
 
             remove(R.string.settings_key_locale);
         }
 
         if (settings.contains(getResString(R.string.settings_key_tap_to_reveal))) {
             if (getBoolean(R.string.settings_key_tap_to_reveal, false)) {
-                setString(R.string.settings_key_tap_single, Constants.TapMode.REVEAL.toString().toLowerCase(Locale.ENGLISH));
+                setString(
+                        R.string.settings_key_tap_single,
+                        Constants.TapMode.REVEAL.toString().toLowerCase(Locale.ENGLISH));
             }
             remove(R.string.settings_key_tap_to_reveal);
         }
 
         if (settings.contains(getResString(R.string.settings_key_label_scroll))) {
             if (getBoolean(R.string.settings_key_label_scroll, false)) {
-                setString(R.string.settings_key_label_display, Constants.LabelDisplay.SCROLL.toString().toLowerCase(Locale.ENGLISH));
+                setString(
+                        R.string.settings_key_label_display,
+                        Constants.LabelDisplay.SCROLL.toString().toLowerCase(Locale.ENGLISH));
             }
             remove(R.string.settings_key_label_scroll);
         }
@@ -101,12 +110,19 @@ public class Settings {
             String plainPassword = getBackupPassword();
 
             try {
-                KeyPair key = KeyStoreHelper.loadOrGenerateAsymmetricKeyPair(context, Constants.KEYSTORE_ALIAS_PASSWORD);
+                KeyPair key =
+                        KeyStoreHelper.loadOrGenerateAsymmetricKeyPair(
+                                context, Constants.KEYSTORE_ALIAS_PASSWORD);
 
                 if (key != null) {
-                    byte[] encPassword = EncryptionHelper.encrypt(key.getPublic(), plainPassword.getBytes(StandardCharsets.UTF_8));
+                    byte[] encPassword =
+                            EncryptionHelper.encrypt(
+                                    key.getPublic(),
+                                    plainPassword.getBytes(StandardCharsets.UTF_8));
 
-                    setString(R.string.settings_key_backup_password_enc, Base64.encodeToString(encPassword, Base64.URL_SAFE));
+                    setString(
+                            R.string.settings_key_backup_password_enc,
+                            Base64.encodeToString(encPassword, Base64.URL_SAFE));
 
                     remove(R.string.settings_key_backup_password);
                 }
@@ -150,35 +166,25 @@ public class Settings {
     }
 
     public void setBoolean(int keyId, boolean value) {
-        settings.edit()
-                .putBoolean(getResString(keyId), value)
-                .apply();
+        settings.edit().putBoolean(getResString(keyId), value).apply();
     }
 
     @SuppressWarnings("SameParameterValue")
     private void setInt(int keyId, int value) {
-        settings.edit()
-                .putInt(getResString(keyId), value)
-                .apply();
+        settings.edit().putInt(getResString(keyId), value).apply();
     }
 
     private void setString(int keyId, String value) {
-        settings.edit()
-                .putString(getResString(keyId), value)
-                .apply();
+        settings.edit().putString(getResString(keyId), value).apply();
     }
 
     @SuppressWarnings("SameParameterValue")
     private void setStringSet(int keyId, Set<String> value) {
-        settings.edit()
-                .putStringSet(getResString(keyId), value)
-                .apply();
+        settings.edit().putStringSet(getResString(keyId), value).apply();
     }
 
     private void remove(int keyId) {
-        settings.edit()
-                .remove(getResString(keyId))
-                .apply();
+        settings.edit().remove(getResString(keyId)).apply();
     }
 
     @SuppressWarnings("ApplySharedPref")
@@ -193,13 +199,16 @@ public class Settings {
         SharedPreferences.Editor editor = settings.edit();
         editor.clear();
 
-        editor.putBoolean(getResString(R.string.settings_key_security_backup_warning), warningShown);
+        editor.putBoolean(
+                getResString(R.string.settings_key_security_backup_warning), warningShown);
 
         if (keep_auth) {
-            editor.putString(getResString(R.string.settings_key_auth), authMethod.toString().toLowerCase());
+            editor.putString(
+                    getResString(R.string.settings_key_auth), authMethod.toString().toLowerCase());
 
-            if (! authCredentials.isEmpty()) {
-                editor.putString(getResString(R.string.settings_key_auth_credentials), authCredentials);
+            if (!authCredentials.isEmpty()) {
+                editor.putString(
+                        getResString(R.string.settings_key_auth_credentials), authCredentials);
                 editor.putInt(getResString(R.string.settings_key_auth_iterations), authIterations);
 
                 String encodedSalt = Base64.encodeToString(authSalt, Base64.URL_SAFE);
@@ -212,24 +221,32 @@ public class Settings {
         PreferenceManager.setDefaultValues(context, R.xml.preferences, true);
     }
 
-    public void registerPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+    public void registerPreferenceChangeListener(
+            SharedPreferences.OnSharedPreferenceChangeListener listener) {
         settings.registerOnSharedPreferenceChangeListener(listener);
     }
 
-    public void unregisterPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+    public void unregisterPreferenceChangeListener(
+            SharedPreferences.OnSharedPreferenceChangeListener listener) {
         settings.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
     public boolean getTapToReveal() {
-        return getTapSingle() == Constants.TapMode.REVEAL || getTapDouble() == Constants.TapMode.REVEAL;
+        return getTapSingle() == Constants.TapMode.REVEAL
+                || getTapDouble() == Constants.TapMode.REVEAL;
     }
 
     public int getTapToRevealTimeout() {
-        return getInt(R.string.settings_key_tap_to_reveal_timeout, R.integer.settings_default_tap_to_reveal_timeout);
+        return getInt(
+                R.string.settings_key_tap_to_reveal_timeout,
+                R.integer.settings_default_tap_to_reveal_timeout);
     }
 
     public AuthMethod getAuthMethod() {
-        String authString = getString(R.string.settings_key_auth, CredentialsPreference.DEFAULT_VALUE.name().toLowerCase(Locale.ENGLISH));
+        String authString =
+                getString(
+                        R.string.settings_key_auth,
+                        CredentialsPreference.DEFAULT_VALUE.name().toLowerCase(Locale.ENGLISH));
         return AuthMethod.valueOf(authString.toUpperCase(Locale.ENGLISH));
     }
 
@@ -240,6 +257,7 @@ public class Settings {
     public void removeAuthPasswordHash() {
         remove(R.string.settings_key_auth_password_hash);
     }
+
     public void removeAuthPINHash() {
         remove(R.string.settings_key_auth_pin_hash);
     }
@@ -249,8 +267,7 @@ public class Settings {
             return getString(R.string.settings_key_auth_password_hash, "");
         else if (method == AuthMethod.PIN)
             return getString(R.string.settings_key_auth_pin_hash, "");
-        else
-            return "";
+        else return "";
     }
 
     public String getAuthCredentials() {
@@ -264,7 +281,8 @@ public class Settings {
             byte[] salt = getSalt();
             int iterations = EncryptionHelper.benchmarkIterations(plainPassword, salt);
 
-            EncryptionHelper.PBKDF2Credentials credentials = EncryptionHelper.generatePBKDF2Credentials(plainPassword, salt, iterations);
+            EncryptionHelper.PBKDF2Credentials credentials =
+                    EncryptionHelper.generatePBKDF2Credentials(plainPassword, salt, iterations);
             String password = Base64.encodeToString(credentials.password, Base64.URL_SAFE);
 
             setIterations(iterations);
@@ -297,7 +315,8 @@ public class Settings {
     }
 
     public int getIterations() {
-        return getIntValue(R.string.settings_key_auth_iterations, Constants.PBKDF2_MIN_AUTH_ITERATIONS);
+        return getIntValue(
+                R.string.settings_key_auth_iterations, Constants.PBKDF2_MIN_AUTH_ITERATIONS);
     }
 
     public void setIterations(int value) {
@@ -305,7 +324,8 @@ public class Settings {
     }
 
     public EncryptionType getEncryption() {
-        String encType = getString(R.string.settings_key_encryption, R.string.settings_default_encryption);
+        String encType =
+                getString(R.string.settings_key_encryption, R.string.settings_default_encryption);
         return EncryptionType.valueOf(encType.toUpperCase());
     }
 
@@ -318,7 +338,8 @@ public class Settings {
     }
 
     public Set<String> getPanicResponse() {
-        return settings.getStringSet(getResString(R.string.settings_key_panic), Collections.emptySet());
+        return settings.getStringSet(
+                getResString(R.string.settings_key_panic), Collections.emptySet());
     }
 
     public boolean getRelockOnScreenOff() {
@@ -343,7 +364,7 @@ public class Settings {
         if (lang.equals("system")) {
             return Tools.getSystemLocale();
         } else {
-            String[] splitLang =  lang.split("_");
+            String[] splitLang = lang.split("_");
 
             if (splitLang.length > 1) {
                 return new Locale(splitLang[0], splitLang[1]);
@@ -355,20 +376,20 @@ public class Settings {
 
     public int getTheme() {
         int theme = R.style.AppTheme_NoActionBar;
-        String themeMode = getString(R.string.settings_key_theme_mode, R.string.settings_default_theme_mode);
+        String themeMode =
+                getString(R.string.settings_key_theme_mode, R.string.settings_default_theme_mode);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && themeMode.equals("auto")){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && themeMode.equals("auto")) {
             boolean blackTheme = getBoolean(R.string.settings_key_theme_black_auto, false);
 
-            switch (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
-                //Dark Mode
+            switch (context.getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK) {
+                    // Dark Mode
                 case Configuration.UI_MODE_NIGHT_YES:
-                    if (blackTheme)
-                        theme = R.style.AppTheme_Black_NoActionBar;
-                    else
-                        theme = R.style.AppTheme_Dark_NoActionBar;
+                    if (blackTheme) theme = R.style.AppTheme_Black_NoActionBar;
+                    else theme = R.style.AppTheme_Dark_NoActionBar;
                     break;
-                //Light Mode / Undefined mode / Default mode
+                    // Light Mode / Undefined mode / Default mode
                 case Configuration.UI_MODE_NIGHT_NO:
                 case Configuration.UI_MODE_NIGHT_UNDEFINED:
                 default:
@@ -376,7 +397,8 @@ public class Settings {
                     break;
             }
         } else {
-            String themeName = getString(R.string.settings_key_theme, R.string.settings_default_theme);
+            String themeName =
+                    getString(R.string.settings_key_theme, R.string.settings_default_theme);
 
             switch (themeName) {
                 case "light":
@@ -424,11 +446,19 @@ public class Settings {
     }
 
     public List<Constants.SearchIncludes> getSearchValues() {
-        Set<String> stringValues = settings.getStringSet(getResString(R.string.settings_key_search_includes), new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.settings_defaults_search_includes))));
+        Set<String> stringValues =
+                settings.getStringSet(
+                        getResString(R.string.settings_key_search_includes),
+                        new HashSet<>(
+                                Arrays.asList(
+                                        context.getResources()
+                                                .getStringArray(
+                                                        R.array
+                                                                .settings_defaults_search_includes))));
 
         List<Constants.SearchIncludes> values = new ArrayList<>();
 
-        assert stringValues != null;     // At least an empty set should always be present
+        assert stringValues != null; // At least an empty set should always be present
 
         for (String value : stringValues) {
             values.add(Constants.SearchIncludes.valueOf(value.toUpperCase(Locale.ENGLISH)));
@@ -438,7 +468,8 @@ public class Settings {
     }
 
     public Constants.CardLayouts getCardLayout() {
-        String stringValue = getString(R.string.settings_key_card_layout, R.string.settings_default_card_layout);
+        String stringValue =
+                getString(R.string.settings_key_card_layout, R.string.settings_default_card_layout);
         return Constants.CardLayouts.valueOf(stringValue.toUpperCase(Locale.ENGLISH));
     }
 
@@ -457,10 +488,15 @@ public class Settings {
         String password = "";
 
         try {
-            KeyPair key = KeyStoreHelper.loadOrGenerateAsymmetricKeyPair(context, Constants.KEYSTORE_ALIAS_PASSWORD);
+            KeyPair key =
+                    KeyStoreHelper.loadOrGenerateAsymmetricKeyPair(
+                            context, Constants.KEYSTORE_ALIAS_PASSWORD);
 
             if (key != null)
-                password = new String(EncryptionHelper.decrypt(key.getPrivate(), encPassword), StandardCharsets.UTF_8);
+                password =
+                        new String(
+                                EncryptionHelper.decrypt(key.getPrivate(), encPassword),
+                                StandardCharsets.UTF_8);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -469,7 +505,8 @@ public class Settings {
     }
 
     public Set<String> getBackupBroadcasts() {
-        return settings.getStringSet(getResString(R.string.settings_key_backup_broadcasts), Collections.emptySet());
+        return settings.getStringSet(
+                getResString(R.string.settings_key_backup_broadcasts), Collections.emptySet());
     }
 
     public boolean isPlainTextBackupBroadcastEnabled() {
@@ -514,25 +551,26 @@ public class Settings {
 
     public boolean getTagToggle(String tag) {
         // The tag toggle holds tags that are unchecked in order to default to checked.
-        Set<String> toggledTags = settings.getStringSet(getResString(R.string.settings_key_tags_toggles), Collections.emptySet());
+        Set<String> toggledTags =
+                settings.getStringSet(
+                        getResString(R.string.settings_key_tags_toggles), Collections.emptySet());
 
-        assert toggledTags != null;     // At least an empty set should always be present
+        assert toggledTags != null; // At least an empty set should always be present
 
         return !toggledTags.contains(tag);
     }
 
     public void setTagToggle(String tag, Boolean value) {
-        Set<String> toggledTagsPref = settings.getStringSet(getResString(R.string.settings_key_tags_toggles), Collections.emptySet());
+        Set<String> toggledTagsPref =
+                settings.getStringSet(
+                        getResString(R.string.settings_key_tags_toggles), Collections.emptySet());
 
         Set<String> toggledTags = Collections.emptySet();
 
-        if (toggledTagsPref != null)
-            toggledTags = new HashSet<>(toggledTagsPref);
+        if (toggledTagsPref != null) toggledTags = new HashSet<>(toggledTagsPref);
 
-        if (value)
-            toggledTags.remove(tag);
-        else
-            toggledTags.add(tag);
+        if (value) toggledTags.remove(tag);
+        else toggledTags.add(tag);
 
         setStringSet(R.string.settings_key_tags_toggles, toggledTags);
     }
@@ -543,26 +581,35 @@ public class Settings {
 
     public int getThumbnailSize() {
         try {
-            String dimen = getString(R.string.settings_key_thumbnail_size, context.getResources().getString(R.string.settings_default_thumbnail_size));
-            return DimensionConverter.stringToDimensionPixelSize(dimen, context.getResources().getDisplayMetrics());
-        } catch(Exception e) {
+            String dimen =
+                    getString(
+                            R.string.settings_key_thumbnail_size,
+                            context.getResources()
+                                    .getString(R.string.settings_default_thumbnail_size));
+            return DimensionConverter.stringToDimensionPixelSize(
+                    dimen, context.getResources().getDisplayMetrics());
+        } catch (Exception e) {
             e.printStackTrace();
             return context.getResources().getDimensionPixelSize(R.dimen.card_thumbnail_size);
         }
     }
 
     public int getTokenSplitGroupSize() {
-        // the setting is of type "String", because ListPreference does not support integer arrays for its entryValues
-        return  Integer.parseInt(
-                getString(R.string.settings_key_split_group_size, R.string.settings_default_split_group_size)
-        );
+        // the setting is of type "String", because ListPreference does not support integer arrays
+        // for its entryValues
+        return Integer.parseInt(
+                getString(
+                        R.string.settings_key_split_group_size,
+                        R.string.settings_default_split_group_size));
     }
 
     public Constants.TagFunctionality getTagFunctionality() {
-        String tagFunctionality = getString(R.string.settings_key_tag_functionality, R.string.settings_default_tag_functionality);
+        String tagFunctionality =
+                getString(
+                        R.string.settings_key_tag_functionality,
+                        R.string.settings_default_tag_functionality);
         return Constants.TagFunctionality.valueOf(tagFunctionality.toUpperCase());
     }
-
 
     public boolean getScreenshotsEnabled() {
         return getBoolean(R.string.settings_key_enable_screenshot, false);
@@ -582,7 +629,7 @@ public class Settings {
 
     public void setAndroidBackupServiceEnabled(boolean value) {
         setBoolean(R.string.settings_key_enable_android_backup_service, value);
-	}
+    }
 
     public boolean getIsAppendingDateTimeToBackups() {
         return getBoolean(R.string.settings_key_backup_append_date_time, true);
@@ -595,13 +642,16 @@ public class Settings {
     public boolean getAuthInactivity() {
         return getBoolean(R.string.settings_key_auth_inactivity, false);
     }
-  
+
     public boolean isMinimizeAppOnCopyEnabled() {
-        return  getBoolean(R.string.settings_key_minimize_on_copy, false);
+        return getBoolean(R.string.settings_key_minimize_on_copy, false);
     }
-  
+
     private Constants.AutoBackup getAutoBackupEncryptedSetting() {
-        String stringValue = getString(R.string.settings_key_auto_backup_password_enc, R.string.settings_default_auto_backup_password_enc);
+        String stringValue =
+                getString(
+                        R.string.settings_key_auto_backup_password_enc,
+                        R.string.settings_default_auto_backup_password_enc);
         return Constants.AutoBackup.valueOf(stringValue.toUpperCase(Locale.ENGLISH));
     }
 
@@ -614,7 +664,7 @@ public class Settings {
     }
 
     public boolean isHighlightTokenOptionEnabled() {
-        return getBoolean(R.string.settings_key_label_highlight_token,true);
+        return getBoolean(R.string.settings_key_label_highlight_token, true);
     }
 
     public boolean isHideGlobalTimeoutEnabled() {
@@ -634,12 +684,14 @@ public class Settings {
     }
 
     public Constants.TapMode getTapSingle() {
-        String singleTap = getString(R.string.settings_key_tap_single, R.string.settings_default_tap_single);
+        String singleTap =
+                getString(R.string.settings_key_tap_single, R.string.settings_default_tap_single);
         return Constants.TapMode.valueOf(singleTap.toUpperCase(Locale.ENGLISH));
     }
 
     public Constants.TapMode getTapDouble() {
-        String doubleTap = getString(R.string.settings_key_tap_double, R.string.settings_default_tap_double);
+        String doubleTap =
+                getString(R.string.settings_key_tap_double, R.string.settings_default_tap_double);
         return Constants.TapMode.valueOf(doubleTap.toUpperCase(Locale.ENGLISH));
     }
 
@@ -662,18 +714,25 @@ public class Settings {
     public boolean getAutoUnlockAfterAutofill() {
         return getBoolean(R.string.settings_key_auto_unlock_after_autofill, false);
     }
-      
+
     public void setDefaultBackupType(Constants.BackupType type) {
-        setString(R.string.settings_key_backup_default_type, type.name().toLowerCase(Locale.ENGLISH));
+        setString(
+                R.string.settings_key_backup_default_type, type.name().toLowerCase(Locale.ENGLISH));
     }
 
     public Constants.BackupType getDefaultBackupType() {
-        String defaultType = getString(R.string.settings_key_backup_default_type, Constants.BackupType.ENCRYPTED.name());
+        String defaultType =
+                getString(
+                        R.string.settings_key_backup_default_type,
+                        Constants.BackupType.ENCRYPTED.name());
         return Constants.BackupType.valueOf(defaultType.toUpperCase(Locale.ENGLISH));
     }
 
     public Constants.LabelDisplay getLabelDisplay() {
-        String labelDisplay = getString(R.string.settings_key_label_display, R.string.settings_default_label_display);
+        String labelDisplay =
+                getString(
+                        R.string.settings_key_label_display,
+                        R.string.settings_default_label_display);
         return Constants.LabelDisplay.valueOf(labelDisplay.toUpperCase(Locale.ENGLISH));
     }
 

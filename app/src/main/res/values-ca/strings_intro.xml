@@ -5,7 +5,7 @@
         procés de configuració inicial. Pareu atenció i llegiu atentament per tal d\'evitar la pèrdua de dades.
         \n\nNo patiu, podreu canviar qualsevol opció a <b>Preferències</b>.</string>
     <string name="intro_slide2_desc">Per tal de garantir la seguretat dels vostres comptes, <b>andOTP</b> fa servir
-        xifratge per a desar les dades. Aquí podeu triar el mètode de xifratge que 
+        xifratge per a desar les dades. Aquí podeu triar el mètode de xifratge que
         s\'hi farà servir.</string>
     <string name="intro_slide2_desc_keystore">The KeyStore is a system component of Android used to
         securely store cryptographic keys. The advantage of using the KeyStore is that the keys are

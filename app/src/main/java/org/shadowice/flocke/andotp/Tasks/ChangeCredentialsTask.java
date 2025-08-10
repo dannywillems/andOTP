@@ -1,17 +1,14 @@
 package org.shadowice.flocke.andotp.Tasks;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-
+import javax.crypto.SecretKey;
 import org.shadowice.flocke.andotp.Utilities.Constants;
 import org.shadowice.flocke.andotp.Utilities.EncryptionHelper;
 import org.shadowice.flocke.andotp.Utilities.Settings;
 
-import javax.crypto.SecretKey;
-
 public class ChangeCredentialsTask extends UiBasedBackgroundTask<ChangeCredentialsTask.Result>
-    implements EncryptionHelper.EncryptionChangeCallback {
+        implements EncryptionHelper.EncryptionChangeCallback {
 
     private final Context context;
     private final Settings settings;
@@ -22,7 +19,12 @@ public class ChangeCredentialsTask extends UiBasedBackgroundTask<ChangeCredentia
 
     private SecretKey newEncryptionKey = null;
 
-    public ChangeCredentialsTask(Context context, Constants.EncryptionType encryptionType, SecretKey oldKey, Constants.AuthMethod newAuth, String password) {
+    public ChangeCredentialsTask(
+            Context context,
+            Constants.EncryptionType encryptionType,
+            SecretKey oldKey,
+            Constants.AuthMethod newAuth,
+            String password) {
         super(new Result(false, null, null));
 
         this.context = context.getApplicationContext();
@@ -34,7 +36,8 @@ public class ChangeCredentialsTask extends UiBasedBackgroundTask<ChangeCredentia
     }
 
     @Override
-    public void onSuccessfulEncryptionChange(Constants.EncryptionType newEncryptionType, SecretKey newEncryptionKey) {
+    public void onSuccessfulEncryptionChange(
+            Constants.EncryptionType newEncryptionType, SecretKey newEncryptionKey) {
         this.newEncryptionKey = newEncryptionKey;
     }
 
@@ -43,7 +46,8 @@ public class ChangeCredentialsTask extends UiBasedBackgroundTask<ChangeCredentia
     protected Result doInBackground() {
         byte[] newKey = null;
 
-        if (newAuthMethod == Constants.AuthMethod.PASSWORD || newAuthMethod == Constants.AuthMethod.PIN) {
+        if (newAuthMethod == Constants.AuthMethod.PASSWORD
+                || newAuthMethod == Constants.AuthMethod.PIN) {
             if (!password.isEmpty()) {
                 newKey = settings.setAuthCredentials(password);
             } else {
@@ -52,10 +56,11 @@ public class ChangeCredentialsTask extends UiBasedBackgroundTask<ChangeCredentia
         }
 
         if (settings.getEncryption() == Constants.EncryptionType.PASSWORD) {
-            if (newKey == null)
-                return new Result(false, null, null);
+            if (newKey == null) return new Result(false, null, null);
 
-            if (EncryptionHelper.tryEncryptionChange(context, oldEncryptionKey, encryptionType, newKey, this) != EncryptionHelper.EncryptionChangeResult.SUCCESS)
+            if (EncryptionHelper.tryEncryptionChange(
+                            context, oldEncryptionKey, encryptionType, newKey, this)
+                    != EncryptionHelper.EncryptionChangeResult.SUCCESS)
                 return new Result(false, null, null);
         }
 

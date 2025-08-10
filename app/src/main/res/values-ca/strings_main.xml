@@ -95,7 +95,7 @@
         <b>Qualsevol entrada que s\'hi hagin afegit es perdrà.</b>\n\nPer a continuar usant andOTP, podeu
         anar a la <b>Configuració</b> i canviar el <b>xifratge de la base de dades</b> a <b>Contrasenyes / PIN</b>.</string>
     <string name="dialog_msg_auto_time">Activa l\'opció<b>Zona horaria automàtica </b> a
-        la <b>Configuració</b> del telèfon per assegurar que sigui correcta la generació de contrasenyes temporals 
+        la <b>Configuració</b> del telèfon per assegurar que sigui correcta la generació de contrasenyes temporals
         basades en un sol ús (TOTP).</string>
     <string name="dialog_hint_dont_show_again">No tornis a mostrar aquest missatge.</string>
     <string name="yes">Sí</string>

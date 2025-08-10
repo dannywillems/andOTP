@@ -32,10 +32,10 @@
     <string name="about_title_support">Geliştiriciyi Destekle</string>
     <string name="about_desc_support">andOTP\'nin geliştirilmesini nasıl destekleyebileceğinizi öğrenin</string>
     <string name="about_title_special_features">Özel Seçenekler</string>
-    <string name="about_dialog_special_features">Bu özel 
-        içerikleri etkinleştirmek istediğinizden emin misiniz? Çoğu özel 
-        istek üzeinde uygulanan standart olmayan OTP algoritmalarıdır. <b>Resmi olarak desteklenmezler</b> ve <b>bazı 
-        limitlemelerle</b> beraber gelirler, lütfen daha fazla bilgi sahibi olmak için kullanmadan önce Github 
+    <string name="about_dialog_special_features">Bu özel
+        içerikleri etkinleştirmek istediğinizden emin misiniz? Çoğu özel
+        istek üzeinde uygulanan standart olmayan OTP algoritmalarıdır. <b>Resmi olarak desteklenmezler</b> ve <b>bazı
+        limitlemelerle</b> beraber gelirler, lütfen daha fazla bilgi sahibi olmak için kullanmadan önce Github
         wiki\'deki \"Özel içerikler\" sayfasını okuyunuz(ve anlayınız).</string>
     <string name="about_toast_special_features">Özel içerikler etkinleştirildi</string>
     <string name="about_toast_special_features_enabled">Özel içerikler zaten etkinleştirilmiş</string>

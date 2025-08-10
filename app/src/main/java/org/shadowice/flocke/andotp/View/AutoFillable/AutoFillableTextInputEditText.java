@@ -4,17 +4,15 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.autofill.AutofillValue;
-
-import com.google.android.material.textfield.TextInputEditText;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputEditText;
 
 /**
- * {@link TextInputEditText} that allows setting a {@link AutoFillTextListener} for getting notified when
- * this field was filled in by autofill.
+ * {@link TextInputEditText} that allows setting a {@link AutoFillTextListener} for getting notified
+ * when this field was filled in by autofill.
  *
- * On devices running Android 7.1 (API 25) and below the listener will never be called, because
+ * <p>On devices running Android 7.1 (API 25) and below the listener will never be called, because
  * autofill is not supported.
  */
 public class AutoFillableTextInputEditText extends TextInputEditText {
@@ -29,7 +27,8 @@ public class AutoFillableTextInputEditText extends TextInputEditText {
         super(context, attrs);
     }
 
-    public AutoFillableTextInputEditText(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public AutoFillableTextInputEditText(
+            @NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

@@ -21,7 +21,7 @@
         vai aos Axustes para activalos</string>
     <string name="backup_receiver_encrypted_disabled">Actualmente non se permiten as copias cifradas,
         vai aos Axustes para activalos</string>
-    <string name="backup_receiver_read_permission_failed">Non tes permiso de lectura, por favor 
+    <string name="backup_receiver_read_permission_failed">Non tes permiso de lectura, por favor
         arranxa esto antes de intentar a copia</string>
     <string name="backup_receiver_write_permission_failed">Non tes permiso de escritura, por favor
         arranxa esto ante de intentar a copia</string>

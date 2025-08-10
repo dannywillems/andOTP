@@ -104,14 +104,14 @@ spotless {
         endWithNewline()
         indentWithSpaces(4)
     }
-    
+
     format 'xml', {
         target 'src/**/*.xml'
         trimTrailingWhitespace()
         indentWithSpaces(4)
         endWithNewline()
     }
-    
+
     format 'misc', {
         target '*.gradle', '*.md', '.gitignore'
         trimTrailingWhitespace()

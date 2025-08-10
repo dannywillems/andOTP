@@ -2,7 +2,6 @@ package org.shadowice.flocke.andotp.Tasks;
 
 import android.content.Intent;
 import android.net.Uri;
-
 import org.shadowice.flocke.andotp.R;
 
 public class BackupTaskResult {
@@ -17,7 +16,9 @@ public class BackupTaskResult {
     public final ResultType resultType;
 
     public enum ResultType {
-        NONE, BACKUP, RESTORE
+        NONE,
+        BACKUP,
+        RESTORE
     }
 
     public BackupTaskResult(ResultType type, boolean success, String payload, int messageId) {
@@ -27,7 +28,14 @@ public class BackupTaskResult {
         this.messageId = messageId;
     }
 
-    public BackupTaskResult(ResultType type, boolean success, String payload, int messageId, boolean isPGP, Intent decryptIntent, Uri uri) {
+    public BackupTaskResult(
+            ResultType type,
+            boolean success,
+            String payload,
+            int messageId,
+            boolean isPGP,
+            Intent decryptIntent,
+            Uri uri) {
         this.resultType = type;
         this.success = success;
         this.payload = payload;

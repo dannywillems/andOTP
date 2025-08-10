@@ -26,12 +26,10 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-
+import java.util.Locale;
 import org.shadowice.flocke.andotp.R;
 import org.shadowice.flocke.andotp.Utilities.Settings;
 import org.shadowice.flocke.andotp.Utilities.Tools;
-
-import java.util.Locale;
 
 public abstract class ThemedActivity extends AppCompatActivity {
     public Settings settings;
@@ -43,8 +41,8 @@ public abstract class ThemedActivity extends AppCompatActivity {
         setTheme(settings.getTheme());
         setLocale();
 
-        //Set navigation bar color
-        getWindow().setNavigationBarColor(Tools.getThemeColor(this,R.attr.navigationBarColor));
+        // Set navigation bar color
+        getWindow().setNavigationBarColor(Tools.getThemeColor(this, R.attr.navigationBarColor));
 
         super.onCreate(savedInstanceState);
     }
@@ -64,7 +62,8 @@ public abstract class ThemedActivity extends AppCompatActivity {
         Configuration config = resources.getConfiguration();
         config.locale = locale;
 
-        // TODO: updateConfiguration is marked as deprecated. Replace with android.content.Context.createConfigurationContext
+        // TODO: updateConfiguration is marked as deprecated. Replace with
+        // android.content.Context.createConfigurationContext
         resources.updateConfiguration(config, resources.getDisplayMetrics());
     }
 }

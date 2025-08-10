@@ -11,8 +11,6 @@ import android.content.pm.PackageManager;
 import android.graphics.ColorFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +18,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import org.shadowice.flocke.andotp.R;
 import org.shadowice.flocke.andotp.Utilities.Settings;
 import org.shadowice.flocke.andotp.Utilities.Tools;
@@ -35,7 +34,8 @@ public class BaseAboutFragment extends Fragment {
     private static final String AUTHOR2_GITHUB = "https://github.com/richyhbm";
 
     private static final String AUTHOR_ORIGINAL_GITHUB = "https://github.com/0xbb";
-    private static final String AUTHOR_ORIGINAL_EXTRA = AUTHOR_ORIGINAL_GITHUB + "/otp-authenticator";
+    private static final String AUTHOR_ORIGINAL_EXTRA =
+            AUTHOR_ORIGINAL_GITHUB + "/otp-authenticator";
 
     private static final String CONTRIBUTORS_URI = GITHUB_URI + "/graphs/contributors";
 
@@ -44,9 +44,15 @@ public class BaseAboutFragment extends Fragment {
     private Settings settings;
 
     static final int[] imageResources = {
-            R.id.aboutImgVersion, R.id.aboutImgLicense, R.id.aboutImgChangelog, R.id.aboutImgSource,
-            R.id.aboutImgFaq, R.id.aboutImgAuthor2, R.id.aboutImgAuthorOriginal,
-            R.id.aboutImgContributors, R.id.aboutImgSupport
+        R.id.aboutImgVersion,
+        R.id.aboutImgLicense,
+        R.id.aboutImgChangelog,
+        R.id.aboutImgSource,
+        R.id.aboutImgFaq,
+        R.id.aboutImgAuthor2,
+        R.id.aboutImgAuthorOriginal,
+        R.id.aboutImgContributors,
+        R.id.aboutImgSupport
     };
 
     static long lastTap = 0;
@@ -54,13 +60,14 @@ public class BaseAboutFragment extends Fragment {
     static Toast currentToast = null;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_about, container, false);
 
         settings = new Settings(getActivity());
 
-        ColorFilter filter = Tools.getThemeColorFilter(getActivity(), android.R.attr.textColorSecondary);
+        ColorFilter filter =
+                Tools.getThemeColorFilter(getActivity(), android.R.attr.textColorSecondary);
         for (int i : imageResources) {
             ImageView imgView = v.findViewById(i);
             imgView.getDrawable().setColorFilter(filter);
@@ -68,7 +75,10 @@ public class BaseAboutFragment extends Fragment {
 
         String versionName = "";
         try {
-            PackageInfo packageInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+            PackageInfo packageInfo =
+                    getActivity()
+                            .getPackageManager()
+                            .getPackageInfo(getActivity().getPackageName(), 0);
             versionName = packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -76,36 +86,42 @@ public class BaseAboutFragment extends Fragment {
 
         LinearLayout versionLayout = v.findViewById(R.id.about_layout_version);
 
-        versionLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                long thisTap = System.currentTimeMillis();
+        versionLayout.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        long thisTap = System.currentTimeMillis();
 
-                if (thisTap - lastTap < 500) {
-                    taps = taps + 1;
+                        if (thisTap - lastTap < 500) {
+                            taps = taps + 1;
 
-                    if (currentToast != null && taps <= 7)
-                        currentToast.cancel();
+                            if (currentToast != null && taps <= 7) currentToast.cancel();
 
-                    if (taps >= 3 && taps <= 7)
-                        currentToast = Toast.makeText(getActivity(), String.valueOf(taps), Toast.LENGTH_SHORT);
+                            if (taps >= 3 && taps <= 7)
+                                currentToast =
+                                        Toast.makeText(
+                                                getActivity(),
+                                                String.valueOf(taps),
+                                                Toast.LENGTH_SHORT);
 
-                    if (taps == 7) {
-                        if (settings.getSpecialFeatures())
-                            currentToast = Toast.makeText(getActivity(), R.string.about_toast_special_features_enabled, Toast.LENGTH_LONG);
-                        else
-                            enableSpecialFeatures();
+                            if (taps == 7) {
+                                if (settings.getSpecialFeatures())
+                                    currentToast =
+                                            Toast.makeText(
+                                                    getActivity(),
+                                                    R.string.about_toast_special_features_enabled,
+                                                    Toast.LENGTH_LONG);
+                                else enableSpecialFeatures();
+                            }
+
+                            if (currentToast != null) currentToast.show();
+                        } else {
+                            taps = 0;
+                        }
+
+                        lastTap = thisTap;
                     }
-
-                    if (currentToast != null)
-                        currentToast.show();
-                } else {
-                    taps = 0;
-                }
-
-                lastTap = thisTap;
-            }
-        });
+                });
 
         TextView version = v.findViewById(R.id.about_text_version);
         version.setText(versionName);
@@ -115,76 +131,85 @@ public class BaseAboutFragment extends Fragment {
         LinearLayout source = v.findViewById(R.id.about_layout_source);
         LinearLayout faq = v.findViewById(R.id.about_layout_faq);
 
-        license.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openURI(MIT_URI);
-            }
-        });
-        changelog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openURI(CHANGELOG_URI);
-            }
-        });
-        source.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openURI(GITHUB_URI);
-            }
-        });
+        license.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openURI(MIT_URI);
+                    }
+                });
+        changelog.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openURI(CHANGELOG_URI);
+                    }
+                });
+        source.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openURI(GITHUB_URI);
+                    }
+                });
         faq.setOnClickListener((View view) -> openURI(FAQ_URI));
 
         LinearLayout author1Layout = v.findViewById(R.id.aboutLayoutAuthor1);
-        author1Layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openURI(AUTHOR1_GITHUB);
-            }
-        });
+        author1Layout.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openURI(AUTHOR1_GITHUB);
+                    }
+                });
 
         LinearLayout author2Layout = v.findViewById(R.id.aboutLayoutAuthor2);
-        author2Layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openURI(AUTHOR2_GITHUB);
-            }
-        });
+        author2Layout.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openURI(AUTHOR2_GITHUB);
+                    }
+                });
 
         LinearLayout authorOrigialLayout = v.findViewById(R.id.aboutLayoutOriginalAuthor);
         TextView authorOriginalApp = v.findViewById(R.id.about_author_original_extra);
-        authorOrigialLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openURI(AUTHOR_ORIGINAL_GITHUB);
-            }
-        });
-        authorOriginalApp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    openURI(AUTHOR_ORIGINAL_EXTRA);
-                } catch(Exception ignored) {
-                    copyToClipboard(AUTHOR_ORIGINAL_EXTRA);
-                }
-            }
-        });
+        authorOrigialLayout.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openURI(AUTHOR_ORIGINAL_GITHUB);
+                    }
+                });
+        authorOriginalApp.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            openURI(AUTHOR_ORIGINAL_EXTRA);
+                        } catch (Exception ignored) {
+                            copyToClipboard(AUTHOR_ORIGINAL_EXTRA);
+                        }
+                    }
+                });
 
         LinearLayout contributors = v.findViewById(R.id.about_layout_contributors);
-        contributors.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openURI(CONTRIBUTORS_URI);
-            }
-        });
+        contributors.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openURI(CONTRIBUTORS_URI);
+                    }
+                });
 
         LinearLayout supportLayout = v.findViewById(R.id.about_layout_support);
-        supportLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openURI(SUPPORT_URI);
-            }
-        });
+        supportLayout.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openURI(SUPPORT_URI);
+                    }
+                });
 
         return v;
     }
@@ -193,17 +218,25 @@ public class BaseAboutFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.about_title_special_features)
                 .setMessage(R.string.about_dialog_special_features)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        settings.setSpecialFeatures(true);
-                        Toast.makeText(getActivity(), R.string.about_toast_special_features, Toast.LENGTH_LONG).show();
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {}
-                })
+                .setPositiveButton(
+                        android.R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                settings.setSpecialFeatures(true);
+                                Toast.makeText(
+                                                getActivity(),
+                                                R.string.about_toast_special_features,
+                                                Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        })
+                .setNegativeButton(
+                        android.R.string.cancel,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {}
+                        })
                 .create()
                 .show();
     }
@@ -215,9 +248,14 @@ public class BaseAboutFragment extends Fragment {
     }
 
     public void copyToClipboard(String uri) {
-        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager clipboard =
+                (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("andOTP", uri);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(getActivity(), getString(R.string.about_toast_copied_to_clipboard), Toast.LENGTH_SHORT).show();
+        Toast.makeText(
+                        getActivity(),
+                        getString(R.string.about_toast_copied_to_clipboard),
+                        Toast.LENGTH_SHORT)
+                .show();
     }
 }

@@ -2,8 +2,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="backup_activity_title">Yedekler</string>
     <string name="backup_title_replace">Mevcut girdiyi değiştir</string>
-    <string name="backup_desc_replace">Etkinleştirilirse, yedeklemeyi çekerken tüm eski girdiler değiştirilir ve sadece 
-        yedek bulundurulur. Devre dışı bırakılırsa eski girdiler ve yedekler 
+    <string name="backup_desc_replace">Etkinleştirilirse, yedeklemeyi çekerken tüm eski girdiler değiştirilir ve sadece
+        yedek bulundurulur. Devre dışı bırakılırsa eski girdiler ve yedekler
         birleştirilir.</string>
     <string name="backup_desc_openpgp_provider">Bu özelliği kullanmak istiyorsanız öncelikle bir OpenPGP
 sağlayıcısı kurmalı, ve de ardından <b>Ayarlar</b> kısmından
@@ -12,7 +12,7 @@ bu özelliği aktif etmelisiniz.    </string>
 kısmından OpenPGP anahtarı seçmelisiniz.    </string>
     <!-- Dialogs -->
     <string name="backup_dialog_title_security_warning">Güvenlik uyarısı</string>
-    <string name="backup_dialog_msg_export_warning">Veritabanını 
+    <string name="backup_dialog_msg_export_warning">Veritabanını
         düz metin Json dosyası olarak dışa aktarmak istiyor musunuz? Bu dosya tüm gizli anahtarlarınızı barındıracak, lütfen <b>iyi saklayınız!</b>!    </string>
     <string name="backup_receiver_title_backup_failed">Yedekleme başarısız</string>
     <string name="backup_receiver_title_backup_success">Yedekleme başarılı</string>
@@ -35,7 +35,7 @@ lütfen bu iznin tanımlanmış olduğundan emin olun</string>
     <string name="notification_channel_name_backup_success">Otomatik yedekleme başarılı</string>
     <string name="notification_channel_desc_backup_failed">Bu bildirimler otomatik yedekleme bir sebepten dolayı
 başarısız olursa gözükmekte</string>
-    <string name="notification_channel_desc_backup_success">Bu bildirimler otomatik yedekleme başarılı 
+    <string name="notification_channel_desc_backup_success">Bu bildirimler otomatik yedekleme başarılı
 olursa gözükmekte</string>
     <!-- Toast messages -->
     <string name="backup_toast_no_location">Lütfen ayarlardan varsayılan yedekleme konumunu belirleyin!</string>

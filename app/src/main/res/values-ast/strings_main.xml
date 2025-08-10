@@ -89,7 +89,7 @@
     <string name="dialog_msg_auth">Introduz les credenciales del preséu p\'aniciar andOTP, por favor.</string>
     <string name="dialog_msg_confirm_delete">¿De xuru que quies desaniciar la cuenta «%1$s»?</string>
     <string name="dialog_msg_used_tokens">andOTP va saber cuándo uses los pases (col usu de la
-        carauterística «Tocar p\'amosar» o copiar al cartafueyu) pa ser a ordenalos por «Más 
+        carauterística «Tocar p\'amosar» o copiar al cartafueyu) pa ser a ordenalos por «Más
         usu» o «Últimu usu».\n\nEsti mensaxe nun va amosase de nueves.</string>
     <string name="dialog_msg_keystore_error">Falló la carga de la clave de cifráu del almacén de claves.
         <b>Va perdese cualesquier entrada que s\'amieste.</b>\n\nPa ser entá a usar andOTP, pues

@@ -108,7 +108,7 @@
     <string name="settings_toast_encryption_change_success">Pomyślnie zmieniono szyfrowanie bazy danych!</string>
     <string name="settings_toast_encryption_change_failed">Nie udało się zmienić szyfrowania bazy danych,
         przywracanie do poprzedniego stanu!</string>
-    <string name="settings_toast_encryption_backup_failed">Nie udało się utworzyć wewnętrznej 
+    <string name="settings_toast_encryption_backup_failed">Nie udało się utworzyć wewnętrznej
         kopii, przerywam!</string>
     <string name="settings_toast_encryption_no_key">Nie można uzyskać klucza szyfrowania, przerywam!</string>
     <string name="settings_toast_encryption_auth_failed">Uwierzytelnianie nie powiodło się!</string>
@@ -120,7 +120,7 @@
     <string name="settings_dialog_title_clear_keystore">Wyczyść KeyStore?</string>
     <string name="settings_dialog_title_android_sync">Synchronizacja systemu Android</string>
     <string name="settings_dialog_msg_encryption_change">andOTP spróbuje teraz zmienić szyfrowanie
-        bazy danych. W razie wypadku wewnętrzna kopia zapasowa zostanie przywrócona i szyfrowanie 
+        bazy danych. W razie wypadku wewnętrzna kopia zapasowa zostanie przywrócona i szyfrowanie
         zostanie niezmienione.\n\n<b>W przypadku gdy wydarzy się coś nieprzewidzianego dobrze
         jest mieć kopię zapasową</b></string>
     <string name="settings_dialog_msg_auth_invalid_with_encryption">Dopóki szyfrowanie bazy danych ustawione jest jako „Hasło / kod PIN”, możesz używać tylko hasła lub kodu PIN!</string>

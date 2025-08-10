@@ -29,31 +29,27 @@ import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
-
 import com.journeyapps.barcodescanner.CaptureActivity;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
-
-import org.shadowice.flocke.andotp.Utilities.Settings;
-
 import java.util.Locale;
+import org.shadowice.flocke.andotp.Utilities.Settings;
 
 public class SecureCaptureActivity extends CaptureActivity {
 
     /**
      * Overwrites {@link CaptureActivity#initializeContent()} to:
+     *
      * <ul>
-     *     <li>preventing the window from appearing in screenshots or from being viewed on
-     *     non-secure displays, if this was enabled in the app settings.</li>
-     *     <li>request hardware acceleration to be turned on.</li>
-     *     <li>hide all screen decorations like navigation and status bars.</li>
+     *   <li>preventing the window from appearing in screenshots or from being viewed on non-secure
+     *       displays, if this was enabled in the app settings.
+     *   <li>request hardware acceleration to be turned on.
+     *   <li>hide all screen decorations like navigation and status bars.
      * </ul>
      *
-     * <em>
-     *     Note:
-     *     {@link android.app.Activity#setContentView(int)} in {@link CaptureActivity#initializeContent()}
-     *     of super class needs to be called before {@link Window#getInsetsController()}, otherwise NPE will be thrown
-     *     because the top-level view of the current {@link Window}, containing the window decor, is not yet initialized.
-     * </em>
+     * <em> Note: {@link android.app.Activity#setContentView(int)} in {@link
+     * CaptureActivity#initializeContent()} of super class needs to be called before {@link
+     * Window#getInsetsController()}, otherwise NPE will be thrown because the top-level view of the
+     * current {@link Window}, containing the window decor, is not yet initialized. </em>
      *
      * @return the DecoratedBarcodeView
      */
@@ -66,30 +62,36 @@ public class SecureCaptureActivity extends CaptureActivity {
         setLocale(settings);
 
         //  This flag must be set before setting the content view of the activity or dialog.
-        getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
-        );
+        getWindow()
+                .setFlags(
+                        WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                        WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
 
-        // All window flags, that must be set before the window decoration is created, are already set
+        // All window flags, that must be set before the window decoration is created, are already
+        // set
         // so we are safe to call super here.
         DecoratedBarcodeView barcodeScannerView = super.initializeContent();
 
         if (!settings.getScreenshotsEnabled()) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+            getWindow()
+                    .setFlags(
+                            WindowManager.LayoutParams.FLAG_SECURE,
+                            WindowManager.LayoutParams.FLAG_SECURE);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             final WindowInsetsController insetsController = getWindow().getInsetsController();
             if (insetsController != null) {
-                insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-                insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                insetsController.hide(
+                        WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+                insetsController.setSystemBarsBehavior(
+                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
             }
         } else {
-            getWindow().setFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN
-            );
+            getWindow()
+                    .setFlags(
+                            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                            WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
 
         return barcodeScannerView;

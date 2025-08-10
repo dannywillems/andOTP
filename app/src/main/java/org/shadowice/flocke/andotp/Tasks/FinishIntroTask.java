@@ -1,9 +1,7 @@
 package org.shadowice.flocke.andotp.Tasks;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-
 import org.shadowice.flocke.andotp.Utilities.Constants;
 import org.shadowice.flocke.andotp.Utilities.Settings;
 
@@ -15,7 +13,12 @@ public class FinishIntroTask extends UiBasedBackgroundTask<FinishIntroTask.Resul
     private final String password;
     private final boolean androidSyncEnabled;
 
-    public FinishIntroTask(Context context, Constants.EncryptionType encryptionType, Constants.AuthMethod authMethod, String password, boolean androidSyncEnabled) {
+    public FinishIntroTask(
+            Context context,
+            Constants.EncryptionType encryptionType,
+            Constants.AuthMethod authMethod,
+            String password,
+            boolean androidSyncEnabled) {
         super(new Result(false, null));
 
         Context applicationContext = context.getApplicationContext();

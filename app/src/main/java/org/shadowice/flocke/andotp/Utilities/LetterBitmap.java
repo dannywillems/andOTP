@@ -34,48 +34,36 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.util.TypedValue;
-
 import org.shadowice.flocke.andotp.R;
 
 /**
- * Orginal http://stackoverflow.com/questions/23122088/colored-boxed-with-letters-a-la-gmail
- * Used to create a {@link Bitmap} that contains a letter used in the English
- * alphabet or digit, if there is no letter or digit available, a default image
- * is shown instead.
+ * Orginal http://stackoverflow.com/questions/23122088/colored-boxed-with-letters-a-la-gmail Used to
+ * create a {@link Bitmap} that contains a letter used in the English alphabet or digit, if there is
+ * no letter or digit available, a default image is shown instead.
  *
- * Only English language supported.
+ * <p>Only English language supported.
  */
 class LetterBitmap {
 
-    /**
-     * The number of available tile colors
-     */
+    /** The number of available tile colors */
     private static final int NUM_OF_TILE_COLORS = 8;
 
-    /**
-     * The {@link TextPaint} used to draw the letter onto the tile
-     */
+    /** The {@link TextPaint} used to draw the letter onto the tile */
     private final TextPaint mPaint = new TextPaint();
-    /**
-     * The bounds that enclose the letter
-     */
+
+    /** The bounds that enclose the letter */
     private final Rect mBounds = new Rect();
-    /**
-     * The {@link Canvas} to draw on
-     */
+
+    /** The {@link Canvas} to draw on */
     private final Canvas mCanvas = new Canvas();
-    /**
-     * The first char of the name being displayed
-     */
+
+    /** The first char of the name being displayed */
     private final char[] mFirstChar = new char[1];
 
-    /**
-     * The background colors of the tile
-     */
+    /** The background colors of the tile */
     private final TypedArray mColors;
-    /**
-     * The font size used to display the letter
-     */
+
+    /** The font size used to display the letter */
     private final float mTileLetterFontSizeScale;
 
     /**
@@ -100,12 +88,11 @@ class LetterBitmap {
 
     /**
      * @param displayName The name used to create the letter for the tile
-     * @param key         The key used to generate the background color for the tile
-     * @param width       The desired width of the tile
-     * @param height      The desired height of the tile
-     * @return A {@link Bitmap} that contains a letter used in the English
-     * alphabet or digit, if there is no letter or digit available, a
-     * default image is shown instead
+     * @param key The key used to generate the background color for the tile
+     * @param width The desired width of the tile
+     * @param height The desired height of the tile
+     * @return A {@link Bitmap} that contains a letter used in the English alphabet or digit, if
+     *     there is no letter or digit available, a default image is shown instead
      */
     public Bitmap getLetterTile(String displayName, String key, int width, int height) {
         final Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -122,25 +109,29 @@ class LetterBitmap {
         mFirstChar[0] = Character.toUpperCase(firstChar);
         mPaint.setTextSize(mTileLetterFontSizeScale * height);
         mPaint.getTextBounds(mFirstChar, 0, 1, mBounds);
-        c.drawText(mFirstChar, 0, 1, width / 2, height / 2
-                + (mBounds.bottom - mBounds.top) / 2, mPaint);
+        c.drawText(
+                mFirstChar,
+                0,
+                1,
+                width / 2,
+                height / 2 + (mBounds.bottom - mBounds.top) / 2,
+                mPaint);
         return bitmap;
     }
 
     /**
      * @param string The string to check
-     * @return True if <code>string</code> starts with an alphabetic letter or a digit,
-     * false otherwise
+     * @return True if <code>string</code> starts with an alphabetic letter or a digit, false
+     *     otherwise
      */
     private static boolean startsWithAlphabeticOrDigit(String string) {
-        return Character.isAlphabetic(string.codePointAt(0)) ||
-                Character.isDigit(string.charAt(0));
+        return Character.isAlphabetic(string.codePointAt(0)) || Character.isDigit(string.charAt(0));
     }
 
     /**
      * @param key The key used to generate the tile color
-     * @return A new or previously chosen color for <code>key</code> used as the
-     * tile background color
+     * @return A new or previously chosen color for <code>key</code> used as the tile background
+     *     color
      */
     private int pickColor(String key) {
         // String.hashCode() is not supposed to change across java versions, so

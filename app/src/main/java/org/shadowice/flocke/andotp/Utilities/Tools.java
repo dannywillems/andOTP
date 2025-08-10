@@ -33,15 +33,13 @@ import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.os.Environment;
 import android.widget.Toast;
-
-import org.shadowice.flocke.andotp.R;
-
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import org.shadowice.flocke.andotp.R;
 
 public class Tools {
     /* Checks if external storage is available for read and write */
@@ -53,13 +51,14 @@ public class Tools {
     /* Checks if external storage is available to at least read */
     public static boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
-        return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
+        return Environment.MEDIA_MOUNTED.equals(state)
+                || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
     /* Get a color based on the current theme */
     public static int getThemeColor(Context context, int colorAttr) {
         Resources.Theme theme = context.getTheme();
-        TypedArray arr = theme.obtainStyledAttributes(new int[]{colorAttr});
+        TypedArray arr = theme.obtainStyledAttributes(new int[] {colorAttr});
 
         int colorValue = arr.getColor(0, -1);
         arr.recycle();
@@ -69,7 +68,7 @@ public class Tools {
 
     public static int getThemeResource(Context context, int styleAttr) {
         Resources.Theme theme = context.getTheme();
-        TypedArray arr = theme.obtainStyledAttributes(new int[]{styleAttr});
+        TypedArray arr = theme.obtainStyledAttributes(new int[] {styleAttr});
 
         int styleValue = arr.getResourceId(0, -1);
         arr.recycle();
@@ -100,8 +99,7 @@ public class Tools {
     }
 
     public static String formatToken(String s, int chunkSize) {
-        if (chunkSize ==0 || s == null)
-            return s;
+        if (chunkSize == 0 || s == null) return s;
 
         StringBuilder ret = new StringBuilder();
         int index = s.length();
@@ -120,8 +118,10 @@ public class Tools {
     }
 
     public static void copyToClipboard(Context context, String text) {
-        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText(context.getString(R.string.label_clipboard_content), text);
+        ClipboardManager clipboard =
+                (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip =
+                ClipData.newPlainText(context.getString(R.string.label_clipboard_content), text);
         clipboard.setPrimaryClip(clip);
 
         Toast.makeText(context, R.string.toast_copied_to_clipboard, Toast.LENGTH_LONG).show();

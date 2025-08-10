@@ -24,7 +24,7 @@
         <b>andOTP</b>. Ker ste izbrali <b>Android KeyStore</b> kot način šifriranja, je to
         neobvezno.</string>
     <string name="intro_slide3_desc_password">Tukaj lahko nastavite metodo zaklepanja za
-        <b>andOTP</b>. Ker ste izbrali <b>Geslo/PIN</b> kot način šifriranja, je potrebno 
+        <b>andOTP</b>. Ker ste izbrali <b>Geslo/PIN</b> kot način šifriranja, je potrebno
         nastaviti ali geslo ali PIN, da nadaljujete.</string>
     <string name="intro_slide3_warn_no_password">Prosim, izberite si geslo, da nadaljujete!</string>
     <string name="intro_slide3_warn_no_pin">Prosim, izberite si PIN številko, da nadaljujete!</string>

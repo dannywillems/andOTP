@@ -40,7 +40,7 @@
       android:strokeColor="#00000000"
       android:fillType="nonZero">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:startY="66.862495"
           android:startX="63.394802"
           android:endY="57.485966"
@@ -63,7 +63,7 @@
       android:strokeColor="#00000000"
       android:fillType="nonZero">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:gradientRadius="10.784006"
           android:centerX="64.86781"
           android:centerY="42.21012"
@@ -118,7 +118,7 @@
       android:strokeColor="#00000000"
       android:fillType="nonZero">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:startY="97.49953"
           android:startX="102.2623"
           android:endY="108.40542"
@@ -141,7 +141,7 @@
       android:strokeColor="#00000000"
       android:fillType="nonZero">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:startY="93.15896"
           android:startX="28.748474"
           android:endY="110.74311"

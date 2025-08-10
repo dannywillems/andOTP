@@ -24,9 +24,6 @@
 package org.shadowice.flocke.andotp.Utilities;
 
 import android.content.Context;
-
-import org.shadowice.flocke.andotp.Database.Entry;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -44,7 +41,6 @@ import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -54,6 +50,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import org.shadowice.flocke.andotp.Database.Entry;
 
 public class EncryptionHelper {
     public static class PBKDF2Credentials {
@@ -62,21 +59,30 @@ public class EncryptionHelper {
     }
 
     public enum EncryptionChangeResult {
-        SUCCESS, CHANGE_FAILURE, BACKUP_FAILURE, MISSING_NEW_KEY, DECRYPTION_FAILED, TASK_CREATION_FAILED
+        SUCCESS,
+        CHANGE_FAILURE,
+        BACKUP_FAILURE,
+        MISSING_NEW_KEY,
+        DECRYPTION_FAILED,
+        TASK_CREATION_FAILED
     }
 
     public interface EncryptionChangeCallback {
-        void onSuccessfulEncryptionChange(Constants.EncryptionType newEncryptionType, SecretKey newEncryptionKey);
+        void onSuccessfulEncryptionChange(
+                Constants.EncryptionType newEncryptionType, SecretKey newEncryptionKey);
     }
 
-    public static EncryptionChangeResult tryEncryptionChange(Context context, SecretKey oldKey, Constants.EncryptionType newType, byte[] newKey, EncryptionChangeCallback changeCallback) {
+    public static EncryptionChangeResult tryEncryptionChange(
+            Context context,
+            SecretKey oldKey,
+            Constants.EncryptionType newType,
+            byte[] newKey,
+            EncryptionChangeCallback changeCallback) {
         if (DatabaseHelper.backupDatabase(context)) {
             ArrayList<Entry> entries;
 
-            if (oldKey != null)
-                entries = DatabaseHelper.loadDatabase(context, oldKey);
-            else
-                return EncryptionChangeResult.DECRYPTION_FAILED;
+            if (oldKey != null) entries = DatabaseHelper.loadDatabase(context, oldKey);
+            else return EncryptionChangeResult.DECRYPTION_FAILED;
 
             SecretKey newEncryptionKey;
 
@@ -90,7 +96,8 @@ public class EncryptionHelper {
             }
 
             if (DatabaseHelper.saveDatabase(context, entries, newEncryptionKey)) {
-                // Persist new encryption here already so everything is fully setup when the task finishes
+                // Persist new encryption here already so everything is fully setup when the task
+                // finishes
                 Settings settings = new Settings(context);
                 settings.setEncryption(newType);
 
@@ -110,15 +117,24 @@ public class EncryptionHelper {
 
     public static int benchmarkIterations(String password, byte[] salt) {
         try {
-            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(Constants.PBKDF2_ALGORITHM);
-            KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, Constants.PBKDF2_BENCHMARK_ITERATIONS, Constants.PBKDF2_LENGTH);
+            SecretKeyFactory secretKeyFactory =
+                    SecretKeyFactory.getInstance(Constants.PBKDF2_ALGORITHM);
+            KeySpec keySpec =
+                    new PBEKeySpec(
+                            password.toCharArray(),
+                            salt,
+                            Constants.PBKDF2_BENCHMARK_ITERATIONS,
+                            Constants.PBKDF2_LENGTH);
 
             long startTime = System.currentTimeMillis();
             secretKeyFactory.generateSecret(keySpec);
             long finishTime = System.currentTimeMillis();
 
             long timeDiff = finishTime - startTime;
-            int scaledIterationTarget = (int) (((double) Constants.PBKDF2_BENCHMARK_ITERATIONS / (double) timeDiff) * Constants.PBKDF2_TARGET_AUTH_TIME);
+            int scaledIterationTarget =
+                    (int)
+                            (((double) Constants.PBKDF2_BENCHMARK_ITERATIONS / (double) timeDiff)
+                                    * Constants.PBKDF2_TARGET_AUTH_TIME);
 
             return Math.max(scaledIterationTarget, Constants.PBKDF2_MIN_AUTH_ITERATIONS);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -129,7 +145,11 @@ public class EncryptionHelper {
 
     public static int generateRandomIterations() {
         Random rand = new Random();
-        return rand.nextInt((Constants.PBKDF2_MAX_BACKUP_ITERATIONS - Constants.PBKDF2_MIN_BACKUP_ITERATIONS) + 1) + Constants.PBKDF2_MIN_BACKUP_ITERATIONS;
+        return rand.nextInt(
+                        (Constants.PBKDF2_MAX_BACKUP_ITERATIONS
+                                        - Constants.PBKDF2_MIN_BACKUP_ITERATIONS)
+                                + 1)
+                + Constants.PBKDF2_MIN_BACKUP_ITERATIONS;
     }
 
     public static byte[] generateRandom(int length) {
@@ -139,10 +159,13 @@ public class EncryptionHelper {
         return raw;
     }
 
-    public static PBKDF2Credentials generatePBKDF2Credentials(String password, byte[] salt, int iter)
-        throws NoSuchAlgorithmException, InvalidKeySpecException {
-        SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(Constants.PBKDF2_ALGORITHM);
-        KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, iter, Constants.PBKDF2_LENGTH);
+    public static PBKDF2Credentials generatePBKDF2Credentials(
+            String password, byte[] salt, int iter)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+        SecretKeyFactory secretKeyFactory =
+                SecretKeyFactory.getInstance(Constants.PBKDF2_ALGORITHM);
+        KeySpec keySpec =
+                new PBEKeySpec(password.toCharArray(), salt, iter, Constants.PBKDF2_LENGTH);
 
         byte[] array = secretKeyFactory.generateSecret(keySpec).getEncoded();
 
@@ -160,9 +183,11 @@ public class EncryptionHelper {
     }
 
     public static SecretKey generateSymmetricKeyPBKDF2(String password, int iter, byte[] salt)
-        throws NoSuchAlgorithmException, InvalidKeySpecException {
-        SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(Constants.PBKDF2_ALGORITHM);
-        KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, iter, Constants.PBKDF2_LENGTH);
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+        SecretKeyFactory secretKeyFactory =
+                SecretKeyFactory.getInstance(Constants.PBKDF2_ALGORITHM);
+        KeySpec keySpec =
+                new PBEKeySpec(password.toCharArray(), salt, iter, Constants.PBKDF2_LENGTH);
 
         return secretKeyFactory.generateSecret(keySpec);
     }
@@ -175,7 +200,12 @@ public class EncryptionHelper {
     }
 
     public static byte[] encrypt(SecretKey secretKey, IvParameterSpec iv, byte[] plainText)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+            throws NoSuchPaddingException,
+                    NoSuchAlgorithmException,
+                    InvalidAlgorithmParameterException,
+                    InvalidKeyException,
+                    BadPaddingException,
+                    IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance(Constants.ALGORITHM_SYMMETRIC);
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
 
@@ -183,7 +213,12 @@ public class EncryptionHelper {
     }
 
     public static byte[] encrypt(SecretKey secretKey, byte[] plaintext)
-            throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, InvalidAlgorithmParameterException {
+            throws NoSuchPaddingException,
+                    BadPaddingException,
+                    InvalidKeyException,
+                    NoSuchAlgorithmException,
+                    IllegalBlockSizeException,
+                    InvalidAlgorithmParameterException {
         final byte[] iv = new byte[Constants.ENCRYPTION_IV_LENGTH];
         new SecureRandom().nextBytes(iv);
 
@@ -197,7 +232,11 @@ public class EncryptionHelper {
     }
 
     public static byte[] encrypt(PublicKey publicKey, byte[] plaintext)
-            throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException {
+            throws NoSuchPaddingException,
+                    BadPaddingException,
+                    InvalidKeyException,
+                    NoSuchAlgorithmException,
+                    IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance(Constants.ALGORITHM_ASYMMETRIC);
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
@@ -205,7 +244,12 @@ public class EncryptionHelper {
     }
 
     public static byte[] decrypt(SecretKey secretKey, IvParameterSpec iv, byte[] cipherText)
-            throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+            throws NoSuchPaddingException,
+                    InvalidKeyException,
+                    NoSuchAlgorithmException,
+                    IllegalBlockSizeException,
+                    BadPaddingException,
+                    InvalidAlgorithmParameterException {
         Cipher cipher = Cipher.getInstance(Constants.ALGORITHM_SYMMETRIC);
         cipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
 
@@ -213,15 +257,25 @@ public class EncryptionHelper {
     }
 
     public static byte[] decrypt(SecretKey secretKey, byte[] cipherText)
-            throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+            throws NoSuchPaddingException,
+                    InvalidKeyException,
+                    NoSuchAlgorithmException,
+                    IllegalBlockSizeException,
+                    BadPaddingException,
+                    InvalidAlgorithmParameterException {
         byte[] iv = Arrays.copyOfRange(cipherText, 0, Constants.ENCRYPTION_IV_LENGTH);
-        byte[] encrypted = Arrays.copyOfRange(cipherText, Constants.ENCRYPTION_IV_LENGTH, cipherText.length);
+        byte[] encrypted =
+                Arrays.copyOfRange(cipherText, Constants.ENCRYPTION_IV_LENGTH, cipherText.length);
 
         return decrypt(secretKey, new IvParameterSpec(iv), encrypted);
     }
 
     public static byte[] decrypt(PrivateKey privateKey, byte[] cipherText)
-            throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException {
+            throws NoSuchPaddingException,
+                    InvalidKeyException,
+                    NoSuchAlgorithmException,
+                    IllegalBlockSizeException,
+                    BadPaddingException {
         Cipher cipher = Cipher.getInstance(Constants.ALGORITHM_ASYMMETRIC);
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
@@ -229,9 +283,8 @@ public class EncryptionHelper {
     }
 
     /**
-     * Load our symmetric secret key.
-     * The symmetric secret key is stored securely on disk by wrapping
-     * it with a public/private key pair, possibly backed by hardware.
+     * Load our symmetric secret key. The symmetric secret key is stored securely on disk by
+     * wrapping it with a public/private key pair, possibly backed by hardware.
      */
     public static SecretKey loadOrGenerateWrappedKey(File keyFile, KeyPair keyPair)
             throws GeneralSecurityException, IOException {
@@ -243,7 +296,6 @@ public class EncryptionHelper {
 
             final SecretKey key = new SecretKeySpec(raw, "AES");
             final byte[] wrapped = wrapper.wrap(key);
-
 
             FileHelper.writeBytesToFile(keyFile, wrapped);
         }

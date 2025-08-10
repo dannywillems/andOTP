@@ -2,9 +2,7 @@ package org.shadowice.flocke.andotp.Tasks;
 
 import android.content.Context;
 import android.net.Uri;
-
 import androidx.annotation.NonNull;
-
 import org.shadowice.flocke.andotp.Utilities.StorageAccessHelper;
 
 public class PlainTextRestoreTask extends GenericRestoreTask {

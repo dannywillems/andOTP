@@ -1,7 +1,5 @@
 package org.shadowice.flocke.andotp.Database;
 
-import org.shadowice.flocke.andotp.Utilities.Constants;
-
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import org.shadowice.flocke.andotp.Utilities.Constants;
 
 public class EntryList {
     private final ArrayList<Entry> entries;
@@ -23,7 +22,7 @@ public class EntryList {
     }
 
     public boolean addEntry(Entry newEntry, boolean update) {
-        if (! entries.contains(newEntry)) {
+        if (!entries.contains(newEntry)) {
             long newId = currentId.incrementAndGet();
             newEntry.setListId(newId);
 
@@ -81,7 +80,8 @@ public class EntryList {
         return sortEntries(entries, sortMode);
     }
 
-    public static ArrayList<Entry> sortEntries(ArrayList<Entry> unsortedEntries, Constants.SortMode sortMode) {
+    public static ArrayList<Entry> sortEntries(
+            ArrayList<Entry> unsortedEntries, Constants.SortMode sortMode) {
         ArrayList<Entry> sorted = new ArrayList<>(unsortedEntries);
 
         if (sortMode == Constants.SortMode.ISSUER) {
@@ -100,26 +100,39 @@ public class EntryList {
     public ArrayList<String> getAllTags() {
         HashSet<String> tags = new HashSet<>();
 
-        for(Entry entry : entries) {
+        for (Entry entry : entries) {
             tags.addAll(entry.getTags());
         }
 
         return new ArrayList<>(tags);
     }
 
-    public ArrayList<Entry> getFilteredEntries(CharSequence constraint, List<Constants.SearchIncludes> filterValues, Constants.SortMode sortMode) {
+    public ArrayList<Entry> getFilteredEntries(
+            CharSequence constraint,
+            List<Constants.SearchIncludes> filterValues,
+            Constants.SortMode sortMode) {
         ArrayList<Entry> filtered = new ArrayList<>();
 
-        if (constraint != null && constraint.length() != 0){
+        if (constraint != null && constraint.length() != 0) {
             for (int i = 0; i < entries.size(); i++) {
-                if (filterValues.contains(Constants.SearchIncludes.LABEL) && entries.get(i).getLabel().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                if (filterValues.contains(Constants.SearchIncludes.LABEL)
+                        && entries.get(i)
+                                .getLabel()
+                                .toLowerCase()
+                                .contains(constraint.toString().toLowerCase())) {
                     filtered.add(entries.get(i));
-                } else if (filterValues.contains(Constants.SearchIncludes.ISSUER) && entries.get(i).getIssuer().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                } else if (filterValues.contains(Constants.SearchIncludes.ISSUER)
+                        && entries.get(i)
+                                .getIssuer()
+                                .toLowerCase()
+                                .contains(constraint.toString().toLowerCase())) {
                     filtered.add(entries.get(i));
                 } else if (filterValues.contains(Constants.SearchIncludes.TAGS)) {
                     List<String> tags = entries.get(i).getTags();
                     for (int j = 0; j < tags.size(); j++) {
-                        if (tags.get(j).toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        if (tags.get(j)
+                                .toLowerCase()
+                                .contains(constraint.toString().toLowerCase())) {
                             filtered.add(entries.get(i));
                             break;
                         }
@@ -133,15 +146,19 @@ public class EntryList {
         return sortEntries(filtered, sortMode);
     }
 
-    public ArrayList<Entry> getEntriesFilteredByTags(List<String> tags, boolean noTags, Constants.TagFunctionality tagFunctionality, Constants.SortMode sortMode) {
+    public ArrayList<Entry> getEntriesFilteredByTags(
+            List<String> tags,
+            boolean noTags,
+            Constants.TagFunctionality tagFunctionality,
+            Constants.SortMode sortMode) {
         ArrayList<Entry> matchingEntries = new ArrayList<>();
 
-        for(Entry e : entries) {
+        for (Entry e : entries) {
             // Entries with no tags will always be shown
             boolean foundMatchingTag = e.getTags().isEmpty() && noTags;
 
-            if(tagFunctionality == Constants.TagFunctionality.AND) {
-                if(e.getTags().containsAll(tags)) {
+            if (tagFunctionality == Constants.TagFunctionality.AND) {
+                if (e.getTags().containsAll(tags)) {
                     foundMatchingTag = true;
                 }
             } else {
@@ -153,7 +170,7 @@ public class EntryList {
                 }
             }
 
-            if(foundMatchingTag) {
+            if (foundMatchingTag) {
                 matchingEntries.add(e);
             }
         }
@@ -164,7 +181,7 @@ public class EntryList {
     public static class IssuerComparator implements Comparator<Entry> {
         Collator collator;
 
-        IssuerComparator(){
+        IssuerComparator() {
             collator = Collator.getInstance();
             collator.setStrength(Collator.PRIMARY);
         }
@@ -178,7 +195,7 @@ public class EntryList {
     public static class LabelComparator implements Comparator<Entry> {
         Collator collator;
 
-        LabelComparator(){
+        LabelComparator() {
             collator = Collator.getInstance();
             collator.setStrength(Collator.PRIMARY);
         }

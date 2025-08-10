@@ -29,9 +29,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -43,9 +40,14 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
-
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import javax.crypto.SecretKey;
 import org.openintents.openpgp.OpenPgpError;
 import org.openintents.openpgp.OpenPgpSignatureResult;
 import org.openintents.openpgp.util.OpenPgpApi;
@@ -67,16 +69,8 @@ import org.shadowice.flocke.andotp.Utilities.DatabaseHelper;
 import org.shadowice.flocke.andotp.Utilities.EncryptionHelper;
 import org.shadowice.flocke.andotp.Utilities.Tools;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-
-import javax.crypto.SecretKey;
-
 public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
-    private final static String TAG = BackupActivity.class.getSimpleName();
+    private static final String TAG = BackupActivity.class.getSimpleName();
 
     private Constants.BackupType backupType = Constants.BackupType.ENCRYPTED;
     private SecretKey encryptionKey = null;
@@ -132,47 +126,57 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
         setupBackupType(settings.getDefaultBackupType());
         spBackupType.setSelection(backupType.ordinal());
 
-        spBackupType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Constants.BackupType type = Constants.BackupType.values()[i];
-                setupBackupType(type);
-            }
+        spBackupType.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(
+                            AdapterView<?> adapterView, View view, int i, long l) {
+                        Constants.BackupType type = Constants.BackupType.values()[i];
+                        setupBackupType(type);
+                    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
-        });
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {}
+                });
 
-        btnBackup.setOnClickListener(view -> {
-            switch (backupType) {
-                case PLAIN_TEXT:
-                    backupPlainWithWarning();
-                    break;
-                case ENCRYPTED:
-                    showSaveFileSelector(Constants.BACKUP_MIMETYPE_CRYPT, Constants.BackupType.ENCRYPTED, Constants.INTENT_BACKUP_SAVE_DOCUMENT_CRYPT);
-                    break;
-                case OPEN_PGP:
-                    showSaveFileSelector(Constants.BACKUP_MIMETYPE_PGP, Constants.BackupType.OPEN_PGP, Constants.INTENT_BACKUP_SAVE_DOCUMENT_PGP);
-                    break;
-            }
-        });
+        btnBackup.setOnClickListener(
+                view -> {
+                    switch (backupType) {
+                        case PLAIN_TEXT:
+                            backupPlainWithWarning();
+                            break;
+                        case ENCRYPTED:
+                            showSaveFileSelector(
+                                    Constants.BACKUP_MIMETYPE_CRYPT,
+                                    Constants.BackupType.ENCRYPTED,
+                                    Constants.INTENT_BACKUP_SAVE_DOCUMENT_CRYPT);
+                            break;
+                        case OPEN_PGP:
+                            showSaveFileSelector(
+                                    Constants.BACKUP_MIMETYPE_PGP,
+                                    Constants.BackupType.OPEN_PGP,
+                                    Constants.INTENT_BACKUP_SAVE_DOCUMENT_PGP);
+                            break;
+                    }
+                });
 
-        btnRestore.setOnClickListener(view -> {
-            switch (backupType) {
-                case PLAIN_TEXT:
-                    showOpenFileSelector(Constants.INTENT_BACKUP_OPEN_DOCUMENT_PLAIN);
-                    break;
-                case ENCRYPTED:
-                    if (chkOldFormat.isChecked())
-                        showOpenFileSelector(Constants.INTENT_BACKUP_OPEN_DOCUMENT_CRYPT_OLD);
-                    else
-                        showOpenFileSelector(Constants.INTENT_BACKUP_OPEN_DOCUMENT_CRYPT);
-                    break;
-                case OPEN_PGP:
-                    showOpenFileSelector(Constants.INTENT_BACKUP_OPEN_DOCUMENT_PGP);
-                    break;
-            }
-        });
+        btnRestore.setOnClickListener(
+                view -> {
+                    switch (backupType) {
+                        case PLAIN_TEXT:
+                            showOpenFileSelector(Constants.INTENT_BACKUP_OPEN_DOCUMENT_PLAIN);
+                            break;
+                        case ENCRYPTED:
+                            if (chkOldFormat.isChecked())
+                                showOpenFileSelector(
+                                        Constants.INTENT_BACKUP_OPEN_DOCUMENT_CRYPT_OLD);
+                            else showOpenFileSelector(Constants.INTENT_BACKUP_OPEN_DOCUMENT_CRYPT);
+                            break;
+                        case OPEN_PGP:
+                            showOpenFileSelector(Constants.INTENT_BACKUP_OPEN_DOCUMENT_PGP);
+                            break;
+                    }
+                });
     }
 
     private void setupBackupType(Constants.BackupType type) {
@@ -211,7 +215,7 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
 
                     btnBackup.setEnabled(false);
                     btnRestore.setEnabled(false);
-                } else if (TextUtils.isEmpty(pgpEncryptionUserIDs)){
+                } else if (TextUtils.isEmpty(pgpEncryptionUserIDs)) {
                     txtBackupWarning.setText(R.string.backup_desc_openpgp_keyid);
                     txtBackupWarning.setVisibility(View.VISIBLE);
 
@@ -223,7 +227,9 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
                     btnBackup.setEnabled(true);
                     btnRestore.setEnabled(true);
 
-                    pgpServiceConnection = new OpenPgpServiceConnection(BackupActivity.this.getApplicationContext(), PGPProvider);
+                    pgpServiceConnection =
+                            new OpenPgpServiceConnection(
+                                    BackupActivity.this.getApplicationContext(), PGPProvider);
                     pgpServiceConnection.bindToService();
                 }
 
@@ -245,8 +251,7 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
     // Go back to the main activity
     @Override
     public boolean onSupportNavigateUp() {
-        if (allowExit)
-            finishWithResult();
+        if (allowExit) finishWithResult();
 
         return true;
     }
@@ -263,11 +268,11 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
     public void onDestroy() {
         super.onDestroy();
 
-        if (pgpServiceConnection != null)
-            pgpServiceConnection.unbindFromService();
+        if (pgpServiceConnection != null) pgpServiceConnection.unbindFromService();
     }
 
-    // TODO: Show more information about the finished backup (e.g. a notification with the file name)
+    // TODO: Show more information about the finished backup (e.g. a notification with the file
+    // name)
     private void notifyBackupState(int msgId) {
         Toast.makeText(this, msgId, Toast.LENGTH_LONG).show();
     }
@@ -281,51 +286,44 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
     }
 
     private void handleBackupTaskResult(BackupTaskResult result) {
-        if (result.messageId != 0)
-            notifyBackupState(result.messageId);
-        else
-            if (result.success)
-                notifyBackupState(R.string.backup_toast_export_success);
-            else
-                notifyBackupState(R.string.backup_toast_export_failed);
+        if (result.messageId != 0) notifyBackupState(result.messageId);
+        else if (result.success) notifyBackupState(R.string.backup_toast_export_success);
+        else notifyBackupState(R.string.backup_toast_export_failed);
 
-        if (result.success)
-            finishWithResult();
+        if (result.success) finishWithResult();
     }
 
     private void handleRestoreTaskResult(BackupTaskResult result) {
         if (result.success) {
             if (result.isPGP) {
-                InputStream is = new ByteArrayInputStream(result.payload.getBytes(StandardCharsets.UTF_8));
+                InputStream is =
+                        new ByteArrayInputStream(result.payload.getBytes(StandardCharsets.UTF_8));
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
 
                 OpenPgpApi api = new OpenPgpApi(this, pgpServiceConnection.getService());
                 Intent resultIntent = api.executeApi(result.decryptIntent, is, os);
 
-                handleOpenPGPResult(resultIntent, os, result.uri, Constants.INTENT_BACKUP_DECRYPT_PGP);
+                handleOpenPGPResult(
+                        resultIntent, os, result.uri, Constants.INTENT_BACKUP_DECRYPT_PGP);
             } else {
                 restoreEntries(result.payload, false);
             }
         } else {
-            if (result.messageId != 0)
-                notifyBackupState(result.messageId);
-            else
-                notifyBackupState(R.string.backup_toast_import_failed);
+            if (result.messageId != 0) notifyBackupState(result.messageId);
+            else notifyBackupState(R.string.backup_toast_import_failed);
         }
 
-        if (result.success && !result.isPGP)
-            finishWithResult();
+        if (result.success && !result.isPGP) finishWithResult();
     }
 
     @Override
     protected void setupUiForTaskState(boolean running) {
-        if (currentTask == BackupTaskResult.ResultType.BACKUP)
-            showBackupProgress(running);
-        else if (currentTask == BackupTaskResult.ResultType.RESTORE)
-            showRestoreProgress(running);
+        if (currentTask == BackupTaskResult.ResultType.BACKUP) showBackupProgress(running);
+        else if (currentTask == BackupTaskResult.ResultType.RESTORE) showRestoreProgress(running);
     }
 
-    protected void startBackgroundTask(UiBasedBackgroundTask<BackupTaskResult> task, BackupTaskResult.ResultType type) {
+    protected void startBackgroundTask(
+            UiBasedBackgroundTask<BackupTaskResult> task, BackupTaskResult.ResultType type) {
         currentTask = type;
         startBackgroundTask(task);
     }
@@ -358,28 +356,32 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
             if (intent != null) {
                 doRestorePlain(intent.getData());
             }
-        } else if (requestCode == Constants.INTENT_BACKUP_SAVE_DOCUMENT_PLAIN && resultCode == RESULT_OK) {
+        } else if (requestCode == Constants.INTENT_BACKUP_SAVE_DOCUMENT_PLAIN
+                && resultCode == RESULT_OK) {
             if (intent != null) {
                 doBackupPlain(intent.getData());
             }
-        } else if (requestCode == Constants.INTENT_BACKUP_OPEN_DOCUMENT_CRYPT && resultCode == RESULT_OK) {
+        } else if (requestCode == Constants.INTENT_BACKUP_OPEN_DOCUMENT_CRYPT
+                && resultCode == RESULT_OK) {
             if (intent != null) {
                 doRestoreCrypt(intent.getData(), false);
             }
-        } else if (requestCode == Constants.INTENT_BACKUP_OPEN_DOCUMENT_CRYPT_OLD && resultCode == RESULT_OK) {
+        } else if (requestCode == Constants.INTENT_BACKUP_OPEN_DOCUMENT_CRYPT_OLD
+                && resultCode == RESULT_OK) {
             if (intent != null) {
                 doRestoreCrypt(intent.getData(), true);
             }
-        } else if (requestCode == Constants.INTENT_BACKUP_SAVE_DOCUMENT_CRYPT && resultCode == RESULT_OK) {
+        } else if (requestCode == Constants.INTENT_BACKUP_SAVE_DOCUMENT_CRYPT
+                && resultCode == RESULT_OK) {
             if (intent != null) {
                 doBackupCrypt(intent.getData());
             }
-        } else if (requestCode == Constants.INTENT_BACKUP_OPEN_DOCUMENT_PGP && resultCode == RESULT_OK) {
-            if (intent != null)
-                restoreEncryptedWithPGP(intent.getData(), null);
-        } else if (requestCode == Constants.INTENT_BACKUP_SAVE_DOCUMENT_PGP && resultCode == RESULT_OK) {
-            if (intent != null)
-                backupEncryptedWithPGP(intent.getData(), null);
+        } else if (requestCode == Constants.INTENT_BACKUP_OPEN_DOCUMENT_PGP
+                && resultCode == RESULT_OK) {
+            if (intent != null) restoreEncryptedWithPGP(intent.getData(), null);
+        } else if (requestCode == Constants.INTENT_BACKUP_SAVE_DOCUMENT_PGP
+                && resultCode == RESULT_OK) {
+            if (intent != null) backupEncryptedWithPGP(intent.getData(), null);
         } else if (requestCode == Constants.INTENT_BACKUP_ENCRYPT_PGP && resultCode == RESULT_OK) {
             backupEncryptedWithPGP(encryptTargetFile, intent);
         } else if (requestCode == Constants.INTENT_BACKUP_DECRYPT_PGP && resultCode == RESULT_OK) {
@@ -407,11 +409,13 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
             startActivityForResult(intent, intentId);
         } catch (ActivityNotFoundException e) {
             Log.d(TAG, "Failed to use ACTION_GET_CONTENT, no matching activity found!");
-            Toast.makeText(this, R.string.backup_toast_file_selection_failed, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.backup_toast_file_selection_failed, Toast.LENGTH_LONG)
+                    .show();
         }
     }
 
-    private void showSaveFileSelector(String mimeType, Constants.BackupType backupType, int intentId) {
+    private void showSaveFileSelector(
+            String mimeType, Constants.BackupType backupType, int intentId) {
         if (settings.getBackupAsk()) {
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -437,7 +441,7 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
         ArrayList<Entry> entries = DatabaseHelper.stringToEntries(text);
 
         if (entries.size() > 0) {
-            if (! swReplace.isChecked()) {
+            if (!swReplace.isChecked()) {
                 ArrayList<Entry> currentEntries = DatabaseHelper.loadDatabase(this, encryptionKey);
 
                 entries.removeAll(currentEntries);
@@ -446,12 +450,13 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
 
             if (DatabaseHelper.saveDatabase(this, entries, encryptionKey)) {
                 reload = true;
-                Toast.makeText(this, R.string.backup_toast_import_success, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.backup_toast_import_success, Toast.LENGTH_LONG)
+                        .show();
 
-                if (finish)
-                    finishWithResult();
+                if (finish) finishWithResult();
             } else {
-                Toast.makeText(this, R.string.backup_toast_import_save_failed, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.backup_toast_import_save_failed, Toast.LENGTH_LONG)
+                        .show();
             }
         } else {
             Toast.makeText(this, R.string.backup_toast_import_no_entries, Toast.LENGTH_LONG).show();
@@ -465,7 +470,8 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
             PlainTextRestoreTask task = new PlainTextRestoreTask(this, uri);
             startBackgroundTask(task, BackupTaskResult.ResultType.RESTORE);
         } else {
-            Toast.makeText(this, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG)
+                    .show();
         }
     }
 
@@ -476,7 +482,8 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
             PlainTextBackupTask task = new PlainTextBackupTask(this, entries, uri);
             startBackgroundTask(task, BackupTaskResult.ResultType.BACKUP);
         } else {
-            Toast.makeText(this, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG)
+                    .show();
         }
     }
 
@@ -485,7 +492,13 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
 
         builder.setTitle(R.string.backup_dialog_title_security_warning)
                 .setMessage(R.string.backup_dialog_msg_export_warning)
-                .setPositiveButton(R.string.yes, (dialogInterface, i) -> showSaveFileSelector(Constants.BACKUP_MIMETYPE_PLAIN, Constants.BackupType.PLAIN_TEXT, Constants.INTENT_BACKUP_SAVE_DOCUMENT_PLAIN))
+                .setPositiveButton(
+                        R.string.yes,
+                        (dialogInterface, i) ->
+                                showSaveFileSelector(
+                                        Constants.BACKUP_MIMETYPE_PLAIN,
+                                        Constants.BackupType.PLAIN_TEXT,
+                                        Constants.INTENT_BACKUP_SAVE_DOCUMENT_PLAIN))
                 .setNegativeButton(R.string.no, (dialogInterface, i) -> {})
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .create()
@@ -498,7 +511,14 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
         String password = settings.getBackupPasswordEnc();
 
         if (password.isEmpty()) {
-            PasswordEntryDialog pwDialog = new PasswordEntryDialog(this, PasswordEntryDialog.Mode.ENTER, settings.getBlockAccessibility(), settings.getBlockAutofill(), newPassword -> doRestoreCryptWithPassword(uri, newPassword, old_format));
+            PasswordEntryDialog pwDialog =
+                    new PasswordEntryDialog(
+                            this,
+                            PasswordEntryDialog.Mode.ENTER,
+                            settings.getBlockAccessibility(),
+                            settings.getBlockAutofill(),
+                            newPassword ->
+                                    doRestoreCryptWithPassword(uri, newPassword, old_format));
             pwDialog.show();
         } else {
             doRestoreCryptWithPassword(uri, password, old_format);
@@ -510,7 +530,8 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
             EncryptedRestoreTask task = new EncryptedRestoreTask(this, uri, password, old_format);
             startBackgroundTask(task, BackupTaskResult.ResultType.RESTORE);
         } else {
-            Toast.makeText(this, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG)
+                    .show();
         }
     }
 
@@ -518,7 +539,13 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
         String password = settings.getBackupPasswordEnc();
 
         if (password.isEmpty()) {
-            PasswordEntryDialog pwDialog = new PasswordEntryDialog(this, PasswordEntryDialog.Mode.UPDATE, settings.getBlockAccessibility(), settings.getBlockAutofill(), newPassword -> doBackupCryptWithPassword(uri, newPassword));
+            PasswordEntryDialog pwDialog =
+                    new PasswordEntryDialog(
+                            this,
+                            PasswordEntryDialog.Mode.UPDATE,
+                            settings.getBlockAccessibility(),
+                            settings.getBlockAutofill(),
+                            newPassword -> doBackupCryptWithPassword(uri, newPassword));
             pwDialog.show();
         } else {
             doBackupCryptWithPassword(uri, password);
@@ -532,15 +559,15 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
             EncryptedBackupTask task = new EncryptedBackupTask(this, entries, password, uri);
             startBackgroundTask(task, BackupTaskResult.ResultType.BACKUP);
         } else {
-            Toast.makeText(this, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG)
+                    .show();
         }
     }
 
     /* OpenPGP backup functions */
 
     private void restoreEncryptedWithPGP(Uri uri, Intent decryptIntent) {
-        if (decryptIntent == null)
-            decryptIntent = new Intent(OpenPgpApi.ACTION_DECRYPT_VERIFY);
+        if (decryptIntent == null) decryptIntent = new Intent(OpenPgpApi.ACTION_DECRYPT_VERIFY);
 
         PGPRestoreTask task = new PGPRestoreTask(this, uri, decryptIntent);
         startBackgroundTask(task, BackupTaskResult.ResultType.RESTORE);
@@ -551,7 +578,8 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
             PGPBackupTask task = new PGPBackupTask(this, data, uri);
             startBackgroundTask(task, BackupTaskResult.ResultType.BACKUP);
         } else {
-            Toast.makeText(this, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG)
+                    .show();
         }
     }
 
@@ -564,7 +592,8 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
 
             if (settings.getOpenPGPSigningKey() != 0) {
                 encryptIntent.setAction(OpenPgpApi.ACTION_SIGN_AND_ENCRYPT);
-                encryptIntent.putExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, settings.getOpenPGPSigningKey());
+                encryptIntent.putExtra(
+                        OpenPgpApi.EXTRA_SIGN_KEY_ID, settings.getOpenPGPSigningKey());
             } else {
                 encryptIntent.setAction(OpenPgpApi.ACTION_ENCRYPT);
             }
@@ -584,32 +613,40 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
         return new String(os.toByteArray(), StandardCharsets.UTF_8);
     }
 
-    public void handleOpenPGPResult(Intent result, ByteArrayOutputStream os, Uri file, int requestCode) {
-        if (result.getIntExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_ERROR) == OpenPgpApi.RESULT_CODE_SUCCESS) {
+    public void handleOpenPGPResult(
+            Intent result, ByteArrayOutputStream os, Uri file, int requestCode) {
+        if (result.getIntExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_ERROR)
+                == OpenPgpApi.RESULT_CODE_SUCCESS) {
             if (requestCode == Constants.INTENT_BACKUP_ENCRYPT_PGP) {
-                if (os != null)
-                    doBackupEncrypted(file, outputStreamToString(os));
+                if (os != null) doBackupEncrypted(file, outputStreamToString(os));
             } else if (requestCode == Constants.INTENT_BACKUP_DECRYPT_PGP) {
                 if (os != null) {
                     if (settings.getOpenPGPVerify()) {
-                        OpenPgpSignatureResult sigResult = result.getParcelableExtra(OpenPgpApi.RESULT_SIGNATURE);
+                        OpenPgpSignatureResult sigResult =
+                                result.getParcelableExtra(OpenPgpApi.RESULT_SIGNATURE);
 
-                        if (sigResult != null && sigResult.getResult() == OpenPgpSignatureResult.RESULT_VALID_KEY_CONFIRMED) {
+                        if (sigResult != null
+                                && sigResult.getResult()
+                                        == OpenPgpSignatureResult.RESULT_VALID_KEY_CONFIRMED) {
                             restoreEntries(outputStreamToString(os), true);
                         } else {
-                            Toast.makeText(this, R.string.backup_toast_openpgp_not_verified, Toast.LENGTH_LONG).show();
+                            Toast.makeText(
+                                            this,
+                                            R.string.backup_toast_openpgp_not_verified,
+                                            Toast.LENGTH_LONG)
+                                    .show();
                         }
                     } else {
                         restoreEntries(outputStreamToString(os), true);
                     }
                 }
             }
-        } else if (result.getIntExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_ERROR) == OpenPgpApi.RESULT_CODE_USER_INTERACTION_REQUIRED) {
+        } else if (result.getIntExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_ERROR)
+                == OpenPgpApi.RESULT_CODE_USER_INTERACTION_REQUIRED) {
             PendingIntent pi = result.getParcelableExtra(OpenPgpApi.RESULT_INTENT);
 
             // Can't do anything without this intent
-            if (pi == null)
-                return;
+            if (pi == null) return;
 
             // Small hack to keep the target file even after user interaction
             if (requestCode == Constants.INTENT_BACKUP_ENCRYPT_PGP) {
@@ -623,16 +660,23 @@ public class BackupActivity extends BackgroundTaskActivity<BackupTaskResult> {
             } catch (IntentSender.SendIntentException e) {
                 e.printStackTrace();
             }
-        } else if (result.getIntExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_ERROR) == OpenPgpApi.RESULT_CODE_ERROR) {
+        } else if (result.getIntExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_ERROR)
+                == OpenPgpApi.RESULT_CODE_ERROR) {
             OpenPgpError error = result.getParcelableExtra(OpenPgpApi.RESULT_ERROR);
 
             if (error != null)
-                Toast.makeText(this, String.format(getString(R.string.backup_toast_openpgp_error), error.getMessage()), Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                                this,
+                                String.format(
+                                        getString(R.string.backup_toast_openpgp_error),
+                                        error.getMessage()),
+                                Toast.LENGTH_LONG)
+                        .show();
         }
     }
 
     @Override
     protected boolean shouldDestroyOnScreenOff() {
-        return allowExit;   // Don't destroy the backup activity as long as a backup task is running
+        return allowExit; // Don't destroy the backup activity as long as a backup task is running
     }
 }

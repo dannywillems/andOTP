@@ -55,7 +55,7 @@
     <string name="settings_title_enable_android_backup_service">Omogoči android sinhronizacijo</string>
     <string name="settings_title_clear_keystore">Izbriši KeyStore</string>
     <!-- Descriptions -->
-    <string name="settings_desc_tap_to_reveal">Privzeto skrij OTP žetone, prikazani so samo, če 
+    <string name="settings_desc_tap_to_reveal">Privzeto skrij OTP žetone, prikazani so samo, če
         so odkriti ročno</string>
     <string name="settings_desc_tap_to_reveal_timeout">Izberite čas (v sekundah) po katerem se
         skrijejo izbrani računi</string>
@@ -102,7 +102,7 @@
         preko tretjih aplikacij</string>
     <string name="settings_desc_openpgp_key_encrypt">Poštni naslov OpenPGP ključa je uporabljen za kodiranje
         varnostne kopije</string>
-    <string name="settings_desc_openpgp_verify">Kodirane varnostne kopije so lahko uvožene, če so 
+    <string name="settings_desc_openpgp_verify">Kodirane varnostne kopije so lahko uvožene, če so
         podpisane z veljavnim ključem</string>
     <string name="settings_desc_special_features">Odoznači za ponovno onemogočenje posebnih funkcij</string>
     <string name="settings_desc_enable_screenshot">Dovoli posnetek glavnega zaslona
@@ -117,7 +117,7 @@
         Preverjanje pristnosti na Brez, da jo onemogočite!</string>
     <string name="settings_toast_encryption_changing">Poskus spreminjanja kodiranja zbirke podatkov je v teku,
         prosim počakajte!</string>
-    <string name="settings_toast_encryption_change_success">Uspešno spremenjeno kodiranje 
+    <string name="settings_toast_encryption_change_success">Uspešno spremenjeno kodiranje
         zbirke podatkov!</string>
     <string name="settings_toast_encryption_change_failed">Spreminjanje kodiranje zbirke podatkov ni uspelo,
         obnavljanja prejšnjega načina kodiranja!</string>
@@ -144,7 +144,7 @@
     <string name="settings_dialog_msg_encryption_invalid_without_credentials">Najprej morate nastaviti
         Geslo ali PIN pred spreminjanjem načina kodiranja!</string>
     <string name="settings_dialog_msg_clear_keystore_password">V nekaterih primerih lahko brisanje KeyStore
-        pomaga rešiti probleme. Svetovano je, da nadaljujete, če veste kaj delate!\n\n Ker je 
+        pomaga rešiti probleme. Svetovano je, da nadaljujete, če veste kaj delate!\n\n Ker je
         <b>kodiranje zbirke podatkov</b>nastavljeno na <b>Geslo / PIN</b> ne bi smeli pri tem izgubiti nič podatkov,
         (ampak nikoli ne škodi prej vseeno narediti varnostne kopije).\n\n<b> Ali ste prepričani, da želite
         izbrisati KeyStore?</b></string>

@@ -62,7 +62,7 @@
     <string name="settings_desc_panic">Decidiu què fer quan es prem el botó del pànic</string>
     <string name="settings_desc_relock_screen_off">Demana autenticació després que la pantalla
         s\'hagi apagat</string>
-    <string name="settings_desc_relock_background">Demana autenticació després que l\'aplicació 
+    <string name="settings_desc_relock_background">Demana autenticació després que l\'aplicació
         se\'n vagi a segon pla (p. ex. prement el botó «inici»)</string>
     <string name="settings_desc_auth_inactivity">Demana autenticació després que el dispositiu ha
         estat inactiu</string>
