@@ -1,5 +1,8 @@
 # Makefile for andOTP Android project
 
+# Configuration
+ANDROID_API_LEVEL = 35
+
 help: ## Ask for help!
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
@@ -96,10 +99,10 @@ emulator-create: ## Create a new Android emulator (API 35)
 	@if avdmanager list avd | grep -q "Name: andotp_test"; then \
 		echo "Emulator 'andotp_test' already exists. Use 'make emulator-delete' to remove it first."; \
 	else \
-		echo "Creating Android emulator with API 35..."; \
-		echo "no" | avdmanager create avd -n andotp_test -k "system-images;android-35;google_apis;x86_64" || \
+		echo "Creating Android emulator with API $(ANDROID_API_LEVEL)..."; \
+		echo "no" | avdmanager create avd -n andotp_test -k "system-images;android-$(ANDROID_API_LEVEL);google_apis;x86_64" || \
 		(echo "Failed! Make sure you have installed the system image with:" && \
-		echo "sdkmanager \"system-images;android-35;google_apis;x86_64\""); \
+		echo "sdkmanager \"system-images;android-$(ANDROID_API_LEVEL);google_apis;x86_64\""); \
 	fi
 
 .PHONY: emulator-delete
