@@ -4,7 +4,6 @@ about: Request a new thumbnail
 title: "[Thumbnail]"
 labels: enhancement, thumbnail
 assignees: flocke, RichyHBM, ziegenberg
-
 ---
 
 <!-- Please fill in **all the information below** to help speed up the process! -->

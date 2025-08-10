@@ -78,8 +78,69 @@ format-check: ## Check code formatting without applying changes
 checkstyle: ## Run Checkstyle linter on Java code
 	./gradlew checkstyleMain
 
+.PHONY: fix-trailing-whitespace
+fix-trailing-whitespace: ## Remove trailing whitespaces from all source files
+	@find . -type f \( \
+		-name "*.java" -o -name "*.xml" -o -name "*.md" -o -name "*.yaml" \
+		-o -name "*.yml" -o -name "*.json" -o -name "*.gradle" -o -name "*.properties" \
+		-o -name "*.sh" -o -name "*.txt" \) \
+		-not -path "./app/build/*" \
+		-not -path "./build/*" \
+		-not -path "./.gradle/*" \
+		-not -path "./gradle/wrapper/*" \
+		-not -path "./.git/*" \
+		-not -path "./node_modules/*" \
+		-exec sed -i'' -e "s/[[:space:]]*$$//" {} + && \
+		echo "Trailing whitespaces removed from source files."
+
+.PHONY: check-trailing-whitespace
+check-trailing-whitespace: ## Check for trailing whitespaces in source files
+	@files_with_trailing_ws=$$(find . -type f \( \
+		-name "*.java" -o -name "*.xml" -o -name "*.md" -o -name "*.yaml" \
+		-o -name "*.yml" -o -name "*.json" -o -name "*.gradle" -o -name "*.properties" \
+		-o -name "*.sh" -o -name "*.txt" \) \
+		-not -path "./app/build/*" \
+		-not -path "./build/*" \
+		-not -path "./.gradle/*" \
+		-not -path "./gradle/wrapper/*" \
+		-not -path "./.git/*" \
+		-not -path "./node_modules/*" \
+		-exec grep -l "[[:space:]]$$" {} \; 2>/dev/null); \
+	if [ -n "$$files_with_trailing_ws" ]; then \
+		echo "Files with trailing whitespace found:"; \
+		echo "$$files_with_trailing_ws"; \
+		echo "Run 'make fix-trailing-whitespace' to fix them."; \
+		exit 1; \
+	else \
+		echo "No trailing whitespaces found in source files."; \
+	fi
+
+.PHONY: format-md
+format-md: ## Format all markdown files using prettier
+	@if command -v npx >/dev/null 2>&1; then \
+		echo "Formatting markdown files..."; \
+		npx prettier --write "**/*.md"; \
+		echo "Markdown files have been formatted."; \
+	else \
+		echo "Error: npx not found. Install Node.js to use markdown formatting."; \
+		echo "Alternative: run 'npm install' if package.json exists."; \
+		exit 1; \
+	fi
+
+.PHONY: check-md
+check-md: ## Check if markdown files are properly formatted
+	@if command -v npx >/dev/null 2>&1; then \
+		echo "Checking markdown formatting..."; \
+		npx prettier --check "**/*.md"; \
+		echo "Markdown format check completed."; \
+	else \
+		echo "Error: npx not found. Install Node.js to use markdown formatting."; \
+		echo "Alternative: run 'npm install' if package.json exists."; \
+		exit 1; \
+	fi
+
 .PHONY: check
-check: lint checkstyle format-check test ## Run all checks (lint + checkstyle + format + tests)
+check: lint checkstyle format-check check-trailing-whitespace test ## Run all checks (lint + checkstyle + format + whitespace + tests)
 
 # Utility targets
 .PHONY: gradle-wrapper

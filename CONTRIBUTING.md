@@ -23,12 +23,14 @@ Thank you for your interest in contributing to andOTP! This guide will help you 
 andOTP requires **Java 17** for the updated build system (Android Gradle Plugin 8.7.3+). Java 17 is mandatory for building the project.
 
 **Ubuntu/Debian:**
+
 ```bash
 sudo apt update
 sudo apt install openjdk-17-jdk
 ```
 
 **Verify Installation:**
+
 ```bash
 java -version
 javac -version
@@ -75,6 +77,7 @@ sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 ```
 
 **Verify Installation:**
+
 ```bash
 adb --version
 android --version  # or sdkmanager --version
@@ -104,14 +107,17 @@ If you encounter build issues, ensure you're using the latest version of Android
 ### Common Build Issues
 
 **Java Version Issues:**
+
 - Make sure you're using Java 17. Check with `java -version`
 - If using multiple Java versions, set `JAVA_HOME` to Java 17 installation
 
 **Android 12+ Manifest Issues:**
+
 - These have been fixed in recent commits (b83baf99)
 - Ensure you have the latest code from the repository
 
 **Kotlin Dependency Conflicts:**
+
 - These have been resolved with dependency resolution strategy (44ea3501)
 - Clean and rebuild if you encounter duplicate class errors:
   ```bash
@@ -154,6 +160,7 @@ make emulator-test-full   # Complete workflow: start emulator and run app
 ```
 
 **Alternative Gradle Commands:**
+
 ```bash
 # Make gradlew executable
 chmod +x gradlew
@@ -174,6 +181,7 @@ chmod +x gradlew
 ### Build Variants
 
 andOTP has two build flavors:
+
 - **fdroid**: For F-Droid distribution
 - **play**: For Google Play Store distribution
 
@@ -188,12 +196,14 @@ make build-play-release
 The easiest way to test andOTP is using an Android emulator:
 
 **Quick Start:**
+
 ```bash
 # Create and start emulator, build and run app (one command)
 make emulator-test-full
 ```
 
 **Step by Step:**
+
 ```bash
 # 1. Create a new emulator (only needed once)
 make emulator-create
@@ -209,11 +219,13 @@ make emulator-stop
 ```
 
 **Prerequisites for Emulator:**
+
 - Android SDK with system images: `sdkmanager "system-images;android-35;google_apis;x86_64"`
 - Hardware acceleration (Intel HAXM on Intel, or Android Emulator Hypervisor Driver)
 
 **Troubleshooting:**
-- If emulator creation fails, manually install system image: 
+
+- If emulator creation fails, manually install system image:
   ```bash
   sdkmanager "system-images;android-35;google_apis;x86_64"
   ```
@@ -309,6 +321,7 @@ make test-all
 ### Commit Message Format
 
 Use conventional commit messages:
+
 - `Add: New feature or functionality`
 - `Fix: Bug fixes`
 - `Update: Improvements to existing features`
@@ -320,6 +333,7 @@ Use conventional commit messages:
 andOTP supports many languages via [Crowdin](https://crowdin.com/project/andotp).
 
 To contribute translations:
+
 1. Create a Crowdin account
 2. Join the [andOTP project](https://crowdin.com/project/andotp)
 3. Select your language and start translating
@@ -339,7 +353,7 @@ To contribute translations:
 
 - **Issues**: Check existing issues or create a new one
 - **Discussions**: Use GitHub Discussions for questions
-- **Chat**: 
+- **Chat**:
   - Telegram: [@andOTP](https://t.me/andOTP)
   - Matrix: [#andOTP:tchncs.de](https://matrix.to/#/#andOTP:tchncs.de)
 

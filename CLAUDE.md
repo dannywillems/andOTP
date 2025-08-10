@@ -48,17 +48,20 @@ This is an Android Gradle project using Android Gradle Plugin 4.1.3.
 ### Core Components
 
 1. **Activities** (`app/src/main/java/org/shadowice/flocke/andotp/Activities/`):
+
    - `MainActivity`: Main entry list with OTP entries
    - `AuthenticateActivity`: Authentication handling
    - `BackupActivity`: Import/export functionality
    - `SettingsActivity`: App configuration
 
 2. **Database** (`app/src/main/java/org/shadowice/flocke/andotp/Database/`):
+
    - `Entry`: Core OTP entry model (TOTP/HOTP)
    - `EntryList`: Collection management
    - `DatabaseHelper`: Encrypted storage operations
 
 3. **Utilities** (`app/src/main/java/org/shadowice/flocke/andotp/Utilities/`):
+
    - `EncryptionHelper`: Cryptographic operations
    - `KeyStoreHelper`: Android KeyStore integration
    - `TokenCalculator`: OTP generation algorithms
@@ -86,6 +89,7 @@ This is an Android Gradle project using Android Gradle Plugin 4.1.3.
 ## Testing
 
 The project includes both unit tests and instrumentation tests:
+
 - Unit tests: `app/src/test/`
 - Instrumentation tests: `app/src/androidTest/`
 

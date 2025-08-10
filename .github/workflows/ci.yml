@@ -19,7 +19,7 @@ jobs:
       matrix:
         java-version: [17, 21]
       fail-fast: false
-    
+
     env:
       GRADLE_OPTS: -Dorg.gradle.daemon=false
       GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
@@ -51,8 +51,23 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install Node.js dependencies
+      run: npm ci
+
     - name: Make gradlew executable
       run: chmod +x gradlew
+
+    - name: Check trailing whitespace
+      run: make check-trailing-whitespace
+
+    - name: Check markdown formatting
+      run: make check-md
 
     - name: Check code formatting
       run: make format-check
