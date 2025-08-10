@@ -12,11 +12,12 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    name: Build with Java ${{ matrix.java-version }}
+    runs-on: ${{ matrix.os }}
+    name: Build with Java ${{ matrix.java-version }} on ${{ matrix.os }}
 
     strategy:
       matrix:
+        os: [ubuntu-latest, ubuntu-24.04, macos-latest]
         java-version: [17, 21]
       fail-fast: false
 
@@ -87,26 +88,26 @@ jobs:
     - name: Upload APK artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: debug-apk-java-${{ matrix.java-version }}
+        name: debug-apk-java-${{ matrix.java-version }}-${{ matrix.os }}
         path: app/build/outputs/apk/fdroid/debug/*.apk
 
     - name: Upload Checkstyle results
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: checkstyle-results-java-${{ matrix.java-version }}
+        name: checkstyle-results-java-${{ matrix.java-version }}-${{ matrix.os }}
         path: app/build/reports/checkstyle/*.html
 
     - name: Upload lint results
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: lint-results-java-${{ matrix.java-version }}
+        name: lint-results-java-${{ matrix.java-version }}-${{ matrix.os }}
         path: app/build/reports/lint-results*.html
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: test-results-java-${{ matrix.java-version }}
+        name: test-results-java-${{ matrix.java-version }}-${{ matrix.os }}
         path: app/build/reports/tests/
