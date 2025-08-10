@@ -29,7 +29,7 @@
 - Updated project maintenance status to reflect active unofficial maintenance
 - Dependency updates via Dependabot:
   - Kotlin stdlib: 1.8.10 → 2.2.0 (4f71a9bd)
-  - androidx.recyclerview: 1.2.0 → 1.4.0 (1b871a84)  
+  - androidx.recyclerview: 1.2.0 → 1.4.0 (1b871a84)
   - androidx.test.espresso: 3.3.0 → 3.7.0 (b8e3540a)
   - androidx.media: 1.3.0 → 1.7.0 (1cbc8557)
 
