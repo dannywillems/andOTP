@@ -1,5 +1,8 @@
 # Makefile for andOTP Android project
 
+# Configuration
+ANDROID_API_LEVEL = 35
+
 help: ## Ask for help!
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
@@ -85,6 +88,70 @@ device-list: ## List connected Android devices
 .PHONY: logcat
 logcat: ## Show logcat output filtered for andOTP
 	adb logcat | grep -i andotp
+
+# Emulator targets
+.PHONY: emulator-list
+emulator-list: ## List available Android emulators
+	@avdmanager list avd
+
+.PHONY: emulator-create
+emulator-create: ## Create a new Android emulator (API 35)
+	@if avdmanager list avd | grep -q "Name: andotp_test"; then \
+		echo "Emulator 'andotp_test' already exists. Use 'make emulator-delete' to remove it first."; \
+	else \
+		echo "Creating Android emulator with API $(ANDROID_API_LEVEL)..."; \
+		echo "no" | avdmanager create avd -n andotp_test -k "system-images;android-$(ANDROID_API_LEVEL);google_apis;x86_64" || \
+		(echo "Failed! Make sure you have installed the system image with:" && \
+		echo "sdkmanager \"system-images;android-$(ANDROID_API_LEVEL);google_apis;x86_64\""); \
+	fi
+
+.PHONY: emulator-delete
+emulator-delete: ## Delete the andotp_test emulator
+	@avdmanager delete avd -n andotp_test
+
+.PHONY: emulator-start
+emulator-start: ## Start the andotp_test emulator
+	@echo "Starting emulator 'andotp_test'..."
+	@if [ -f "$$ANDROID_HOME/emulator/emulator" ]; then \
+		$$ANDROID_HOME/emulator/emulator -avd andotp_test -no-audio -no-boot-anim & \
+		echo "Emulator started in background. Use 'make emulator-wait' to wait for boot completion."; \
+	else \
+		echo "Error: Emulator not found. Make sure ANDROID_HOME is set and emulator is installed."; \
+		echo "Try: export ANDROID_HOME=/path/to/android/sdk"; \
+		exit 1; \
+	fi
+
+.PHONY: emulator-wait
+emulator-wait: ## Wait for emulator to boot completely
+	@echo "Waiting for emulator to boot..."
+	@adb wait-for-device
+	@echo "Waiting for system to be ready..."
+	@while [ "`adb shell getprop sys.boot_completed 2>/dev/null`" != "1" ]; do \
+		sleep 2; \
+		echo "Still waiting for boot..."; \
+	done
+	@echo "Emulator is ready!"
+
+.PHONY: emulator-stop
+emulator-stop: ## Stop all running emulators
+	@echo "Stopping all emulators..."
+	@adb devices | grep emulator | cut -f1 | xargs -I {} adb -s {} emu kill
+
+.PHONY: emulator-install-debug
+emulator-install-debug: build-fdroid-debug emulator-wait ## Build and install debug APK to emulator
+	@echo "Installing debug APK to emulator..."
+	@adb install -r app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
+	@echo "App installed successfully!"
+
+.PHONY: emulator-run
+emulator-run: emulator-install-debug ## Build, install, and launch andOTP in emulator
+	@echo "Launching andOTP..."
+	@adb shell am start -n org.shadowice.flocke.andotp.dev/org.shadowice.flocke.andotp.Activities.MainActivity
+	@echo "andOTP launched! Check the emulator screen."
+
+.PHONY: emulator-test-full
+emulator-test-full: emulator-start emulator-run ## Complete emulator test: start emulator, build, install, and run app
+	@echo "Complete emulator test completed!"
 
 # APK information
 .PHONY: apk-info
