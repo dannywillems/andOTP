@@ -23,15 +23,13 @@
 
 package org.shadowice.flocke.andotp.Utilities;
 
-import org.apache.commons.codec.binary.Hex;
-
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.binary.Hex;
 
 public class TokenCalculator {
     public static final int TOTP_DEFAULT_PERIOD = 30;
@@ -39,14 +37,17 @@ public class TokenCalculator {
     public static final int HOTP_INITIAL_COUNTER = 1;
     public static final int STEAM_DEFAULT_DIGITS = 5;
 
-    private static final char[] STEAMCHARS = new char[] {
-            '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C',
-            'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q',
-            'R', 'T', 'V', 'W', 'X', 'Y'
-    };
+    private static final char[] STEAMCHARS =
+            new char[] {
+                '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C',
+                'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q',
+                'R', 'T', 'V', 'W', 'X', 'Y'
+            };
 
     public enum HashAlgorithm {
-        SHA1, SHA256, SHA512
+        SHA1,
+        SHA256,
+        SHA512
     }
 
     public static final HashAlgorithm DEFAULT_ALGORITHM = HashAlgorithm.SHA1;
@@ -62,22 +63,34 @@ public class TokenCalculator {
     }
 
     // TODO: Rewrite tests so this compatibility wrapper can be removed
-    public static int TOTP_RFC6238(byte[] secret, int period, long time, int digits, HashAlgorithm algorithm) {
+    public static int TOTP_RFC6238(
+            byte[] secret, int period, long time, int digits, HashAlgorithm algorithm) {
         return TOTP_RFC6238(secret, period, time, digits, algorithm, 0);
     }
 
-    public static int TOTP_RFC6238(byte[] secret, int period, long time, int digits, HashAlgorithm algorithm, int offset) {
+    public static int TOTP_RFC6238(
+            byte[] secret, int period, long time, int digits, HashAlgorithm algorithm, int offset) {
         int fullToken = TOTP(secret, period, time, algorithm, offset);
         int div = (int) Math.pow(10, digits);
 
         return fullToken % div;
     }
 
-    public static String TOTP_RFC6238(byte[] secret, int period, int digits, HashAlgorithm algorithm, int offset) {
-        return Tools.formatTokenString(TOTP_RFC6238(secret, period, System.currentTimeMillis() / 1000, digits, algorithm, offset), digits);
+    public static String TOTP_RFC6238(
+            byte[] secret, int period, int digits, HashAlgorithm algorithm, int offset) {
+        return Tools.formatTokenString(
+                TOTP_RFC6238(
+                        secret,
+                        period,
+                        System.currentTimeMillis() / 1000,
+                        digits,
+                        algorithm,
+                        offset),
+                digits);
     }
 
-    public static String TOTP_Steam(byte[] secret, int period, int digits, HashAlgorithm algorithm, int offset) {
+    public static String TOTP_Steam(
+            byte[] secret, int period, int digits, HashAlgorithm algorithm, int offset) {
         int fullToken = TOTP(secret, period, System.currentTimeMillis() / 1000, algorithm, offset);
 
         StringBuilder tokenBuilder = new StringBuilder();
@@ -97,12 +110,12 @@ public class TokenCalculator {
         return Tools.formatTokenString(fullToken % div, digits);
     }
 
-    private static int TOTP(byte[] key, int period, long time, HashAlgorithm algorithm, int offset) {
+    private static int TOTP(
+            byte[] key, int period, long time, HashAlgorithm algorithm, int offset) {
         return HOTP(key, (time / period) + offset, algorithm);
     }
 
-    private static int HOTP(byte[] key, long counter, HashAlgorithm algorithm)
-    {
+    private static int HOTP(byte[] key, long counter, HashAlgorithm algorithm) {
         int r = 0;
 
         try {
@@ -124,8 +137,7 @@ public class TokenCalculator {
         return r;
     }
 
-    public static String MOTP(String PIN, String secret, long epoch, int offset)
-    {
+    public static String MOTP(String PIN, String secret, long epoch, int offset) {
         String epochText = String.valueOf((epoch / 10) + offset);
         String hashText = epochText + secret + PIN;
         String otp = "";

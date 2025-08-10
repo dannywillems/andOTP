@@ -218,7 +218,7 @@
         <item>Issuer</item>
         <item>Tags</item>
     </string-array>
-  
+
     <string-array name="settings_entries_theme_mode">
         <item>Auto</item>
         <item>Manual</item>
@@ -267,7 +267,7 @@
         <item>Plain-text backups</item>
         <item>Encrypted backups</item>
     </string-array>
-    
+
     <!-- Special -->
     <string name="settings_lang_sys_default">System default</string>
 

@@ -93,7 +93,7 @@
         beállíthassa a „Leggyakrabban használt” vagy „Utoljára használt”
         rendezést.\n\nEz az üzenet többször nem fog megjelenni.</string>
     <string name="dialog_msg_keystore_error">Nem sikerült betölteni a titkosítási kulcsot a KeyStore-ból.
-         <b> Az újonnan hozzáadott bejegyzések eltűnnek. </b> \n\nHa továbbra is használni szeretné  az andOTP-t, 
+         <b> Az újonnan hozzáadott bejegyzések eltűnnek. </b> \n\nHa továbbra is használni szeretné  az andOTP-t,
           akkor a <b> Beállítások </b> alatt, leválthatja <b> Adatbázis-titkosítást </b> <b> Jelszó / PIN  kódra</b>.</string>
     <string name="dialog_msg_auto_time">Engedélyezze az <b>Automatikus dátum és idő</b> beállítást a
         telefonja <b>Beállítások</b> menüjében, hogy biztosítja az időalapú

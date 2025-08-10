@@ -27,18 +27,18 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.preference.DialogPreference;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
 import org.shadowice.flocke.andotp.R;
 import org.shadowice.flocke.andotp.Utilities.ConfirmedPasswordTransformationHelper;
 import org.shadowice.flocke.andotp.Utilities.Constants;
@@ -46,14 +46,12 @@ import org.shadowice.flocke.andotp.Utilities.EncryptionHelper;
 import org.shadowice.flocke.andotp.Utilities.KeyStoreHelper;
 import org.shadowice.flocke.andotp.Utilities.Settings;
 
-import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-
 public class PasswordEncryptedPreference extends DialogPreference
-    implements View.OnClickListener, TextWatcher {
+        implements View.OnClickListener, TextWatcher {
 
     public enum Mode {
-        PASSWORD, PIN
+        PASSWORD,
+        PIN
     }
 
     private KeyPair key;
@@ -73,7 +71,9 @@ public class PasswordEncryptedPreference extends DialogPreference
         super(context, attrs);
 
         try {
-            key = KeyStoreHelper.loadOrGenerateAsymmetricKeyPair(context, Constants.KEYSTORE_ALIAS_PASSWORD);
+            key =
+                    KeyStoreHelper.loadOrGenerateAsymmetricKeyPair(
+                            context, Constants.KEYSTORE_ALIAS_PASSWORD);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,12 +102,14 @@ public class PasswordEncryptedPreference extends DialogPreference
         passwordConfirm = view.findViewById(R.id.passwordConfirm);
 
         if (settings.getBlockAccessibility()) {
-            passwordLayout.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+            passwordLayout.setImportantForAccessibility(
+                    View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
             passwordConfirm.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && settings.getBlockAutofill()) {
-            passwordLayout.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
+            passwordLayout.setImportantForAutofill(
+                    View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
             passwordConfirm.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
@@ -118,7 +120,7 @@ public class PasswordEncryptedPreference extends DialogPreference
         btnCancel.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
-        if (! value.isEmpty()) {
+        if (!value.isEmpty()) {
             passwordInput.setText(value);
         }
 
@@ -126,14 +128,18 @@ public class PasswordEncryptedPreference extends DialogPreference
             passwordLayout.setHint(getContext().getString(R.string.settings_hint_password));
             passwordConfirm.setHint(R.string.settings_hint_password_confirm);
 
-            passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            passwordConfirm.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            passwordInput.setInputType(
+                    InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            passwordConfirm.setInputType(
+                    InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         } else if (mode == Mode.PIN) {
             passwordLayout.setHint(getContext().getString(R.string.settings_hint_pin));
             passwordConfirm.setHint(R.string.settings_hint_pin_confirm);
 
-            passwordInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-            passwordConfirm.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+            passwordInput.setInputType(
+                    InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+            passwordConfirm.setInputType(
+                    InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         }
 
         ConfirmedPasswordTransformationHelper.setup(passwordLayout, passwordInput, passwordConfirm);
@@ -151,7 +157,9 @@ public class PasswordEncryptedPreference extends DialogPreference
 
     private void encryptAndPersist(String value) {
         try {
-            byte[] encBytes = EncryptionHelper.encrypt(key.getPublic(), value.getBytes(StandardCharsets.UTF_8));
+            byte[] encBytes =
+                    EncryptionHelper.encrypt(
+                            key.getPublic(), value.getBytes(StandardCharsets.UTF_8));
             persistString(Base64.encodeToString(encBytes, Base64.URL_SAFE));
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,7 +169,10 @@ public class PasswordEncryptedPreference extends DialogPreference
     private void restoreAndDecrypt(String encValue) {
         try {
             byte[] encBytes = Base64.decode(encValue, Base64.URL_SAFE);
-            value = new String(EncryptionHelper.decrypt(key.getPrivate(), encBytes), StandardCharsets.UTF_8);
+            value =
+                    new String(
+                            EncryptionHelper.decrypt(key.getPrivate(), encBytes),
+                            StandardCharsets.UTF_8);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -192,7 +203,10 @@ public class PasswordEncryptedPreference extends DialogPreference
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (passwordConfirm.getEditableText().toString().equals(passwordInput.getEditableText().toString())) {
+        if (passwordConfirm
+                .getEditableText()
+                .toString()
+                .equals(passwordInput.getEditableText().toString())) {
             btnSave.setEnabled(true);
         } else {
             btnSave.setEnabled(false);

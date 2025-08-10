@@ -2,10 +2,8 @@ package org.shadowice.flocke.andotp.Tasks;
 
 import android.content.Context;
 import android.net.Uri;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import org.shadowice.flocke.andotp.Utilities.Constants;
 import org.shadowice.flocke.andotp.Utilities.StorageAccessHelper;
 

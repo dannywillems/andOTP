@@ -25,7 +25,8 @@ package org.shadowice.flocke.andotp.Receivers;
 
 import android.content.Context;
 import android.content.Intent;
-
+import java.util.ArrayList;
+import javax.crypto.SecretKey;
 import org.shadowice.flocke.andotp.Database.Entry;
 import org.shadowice.flocke.andotp.R;
 import org.shadowice.flocke.andotp.Tasks.BackupTaskResult;
@@ -36,12 +37,9 @@ import org.shadowice.flocke.andotp.Utilities.KeyStoreHelper;
 import org.shadowice.flocke.andotp.Utilities.NotificationHelper;
 import org.shadowice.flocke.andotp.Utilities.Settings;
 
-import java.util.ArrayList;
-
-import javax.crypto.SecretKey;
-
 // Use the following command to test in the dev version:
-//   adb shell am broadcast -a org.shadowice.flocke.andotp.broadcast.ENCRYPTED_BACKUP org.shadowice.flocke.andotp.dev
+//   adb shell am broadcast -a org.shadowice.flocke.andotp.broadcast.ENCRYPTED_BACKUP
+// org.shadowice.flocke.andotp.dev
 public class EncryptedBackupBroadcastReceiver extends BackupBroadcastReceiver {
     private Context context;
 
@@ -51,24 +49,40 @@ public class EncryptedBackupBroadcastReceiver extends BackupBroadcastReceiver {
         Settings settings = new Settings(context);
 
         if (!settings.isEncryptedBackupBroadcastEnabled()) {
-            NotificationHelper.notify(context, Constants.NotificationChannel.BACKUP_FAILED, R.string.backup_receiver_title_backup_failed, R.string.backup_receiver_encrypted_disabled);
+            NotificationHelper.notify(
+                    context,
+                    Constants.NotificationChannel.BACKUP_FAILED,
+                    R.string.backup_receiver_title_backup_failed,
+                    R.string.backup_receiver_encrypted_disabled);
             return;
         }
 
         if (!canSaveBackup(context)) {
-            NotificationHelper.notify(context, Constants.NotificationChannel.BACKUP_FAILED, R.string.backup_receiver_title_backup_failed, R.string.backup_receiver_no_location_set);
+            NotificationHelper.notify(
+                    context,
+                    Constants.NotificationChannel.BACKUP_FAILED,
+                    R.string.backup_receiver_title_backup_failed,
+                    R.string.backup_receiver_no_location_set);
             return;
         }
 
         String password = settings.getBackupPasswordEnc();
 
         if (password.isEmpty()) {
-            NotificationHelper.notify(context, Constants.NotificationChannel.BACKUP_FAILED, R.string.backup_receiver_title_backup_failed, R.string.backup_receiver_no_password_set);
+            NotificationHelper.notify(
+                    context,
+                    Constants.NotificationChannel.BACKUP_FAILED,
+                    R.string.backup_receiver_title_backup_failed,
+                    R.string.backup_receiver_no_password_set);
             return;
         }
 
         if (settings.getEncryption() != Constants.EncryptionType.KEYSTORE) {
-            NotificationHelper.notify(context, Constants.NotificationChannel.BACKUP_FAILED, R.string.backup_receiver_title_backup_failed, R.string.backup_receiver_custom_encryption_failed);
+            NotificationHelper.notify(
+                    context,
+                    Constants.NotificationChannel.BACKUP_FAILED,
+                    R.string.backup_receiver_title_backup_failed,
+                    R.string.backup_receiver_custom_encryption_failed);
             return;
         }
 
@@ -83,9 +97,17 @@ public class EncryptedBackupBroadcastReceiver extends BackupBroadcastReceiver {
 
     private void handleTaskResult(BackupTaskResult result) {
         if (result.success) {
-            NotificationHelper.notify(context, Constants.NotificationChannel.BACKUP_SUCCESS, R.string.backup_receiver_title_backup_success, result.payload);
+            NotificationHelper.notify(
+                    context,
+                    Constants.NotificationChannel.BACKUP_SUCCESS,
+                    R.string.backup_receiver_title_backup_success,
+                    result.payload);
         } else {
-            NotificationHelper.notify(context, Constants.NotificationChannel.BACKUP_FAILED, R.string.backup_receiver_title_backup_failed, result.messageId);
+            NotificationHelper.notify(
+                    context,
+                    Constants.NotificationChannel.BACKUP_FAILED,
+                    R.string.backup_receiver_title_backup_failed,
+                    result.messageId);
         }
     }
 }

@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="backup_activity_title">Резервни копия</string>
     <string name="backup_title_replace">Замяна на съществуващите записи</string>
-    <string name="backup_desc_replace">Ако е активирано, всички стари записи се подменят при импортиране на 
+    <string name="backup_desc_replace">Ако е активирано, всички стари записи се подменят при импортиране на
       резервно копие и само резервното копие присъства. Ако е деактивирано, старите записи и архивното съдържание
       се сливат.</string>
     <string name="backup_desc_openpgp_provider">Трябва да инсталирате доставчик на OpenPGP и да го активирате

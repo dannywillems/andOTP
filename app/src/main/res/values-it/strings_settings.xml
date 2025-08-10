@@ -139,7 +139,7 @@ voci o editate, se le condizioni delle impostazioni sono configurate</string>
         caso in cui accada qualcosa di inaspettato!</b></string>
     <string name="settings_dialog_msg_auth_invalid_with_encryption">È possibile utilizzare solo Password o PIN,
         finché  la crittografia del database è impostata su \"Password / PIN\"!</string>
-    <string name="settings_dialog_msg_encryption_invalid_with_auth">È necessario impostare 
+    <string name="settings_dialog_msg_encryption_invalid_with_auth">È necessario impostare
         l\'Autenticazione su \"Password\" o \"PIN\"!</string>
     <string name="settings_dialog_msg_encryption_invalid_without_credentials">È necessario impostare
         una Password o un PIN prima di cambiare la crittografia!</string>

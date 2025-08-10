@@ -2,16 +2,13 @@ package org.shadowice.flocke.andotp.Tasks;
 
 import android.content.Context;
 import android.net.Uri;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import java.util.ArrayList;
 import org.shadowice.flocke.andotp.Database.Entry;
 import org.shadowice.flocke.andotp.Utilities.Constants;
 import org.shadowice.flocke.andotp.Utilities.DatabaseHelper;
 import org.shadowice.flocke.andotp.Utilities.StorageAccessHelper;
-
-import java.util.ArrayList;
 
 public class PlainTextBackupTask extends GenericBackupTask {
     private final ArrayList<Entry> entries;

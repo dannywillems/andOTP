@@ -23,6 +23,10 @@
 
 package org.shadowice.flocke.andotp.Activities;
 
+import static org.shadowice.flocke.andotp.Utilities.Constants.AuthMethod;
+import static org.shadowice.flocke.andotp.Utilities.Constants.EncryptionType;
+import static org.shadowice.flocke.andotp.Utilities.Constants.SortMode;
+
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
@@ -35,21 +39,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.ProcessLifecycleOwner;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.ItemTouchHelper;
-
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -63,13 +52,28 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ProcessLifecycleOwner;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.leinardi.android.speeddial.SpeedDialView;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import javax.crypto.SecretKey;
 import org.shadowice.flocke.andotp.Database.Entry;
 import org.shadowice.flocke.andotp.Dialogs.HideableDialog;
+import org.shadowice.flocke.andotp.Dialogs.ManualEntryDialog;
 import org.shadowice.flocke.andotp.R;
 import org.shadowice.flocke.andotp.Utilities.Constants;
 import org.shadowice.flocke.andotp.Utilities.EncryptionHelper;
@@ -79,17 +83,7 @@ import org.shadowice.flocke.andotp.Utilities.ScanQRCodeFromFile;
 import org.shadowice.flocke.andotp.Utilities.TokenCalculator;
 import org.shadowice.flocke.andotp.View.EntriesCardAdapter;
 import org.shadowice.flocke.andotp.View.ItemTouchHelper.SimpleItemTouchHelperCallback;
-import org.shadowice.flocke.andotp.Dialogs.ManualEntryDialog;
 import org.shadowice.flocke.andotp.View.TagsAdapter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.crypto.SecretKey;
-
-import static org.shadowice.flocke.andotp.Utilities.Constants.AuthMethod;
-import static org.shadowice.flocke.andotp.Utilities.Constants.EncryptionType;
-import static org.shadowice.flocke.andotp.Utilities.Constants.SortMode;
 
 public class MainActivity extends BaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -97,7 +91,8 @@ public class MainActivity extends BaseActivity
 
     private static final String INTENT_SCAN_QR = "org.shadowice.flocke.andotp.intent.SCAN_QR";
     private static final String INTENT_IMPORT_QR = "org.shadowice.flocke.andotp.intent.IMPORT_QR";
-    private static final String INTENT_ENTER_DETAILS = "org.shadowice.flocke.andotp.intent.ENTER_DETAILS";
+    private static final String INTENT_ENTER_DETAILS =
+            "org.shadowice.flocke.andotp.intent.ENTER_DETAILS";
 
     private EntriesCardAdapter adapter;
     private SpeedDialView speedDial;
@@ -126,7 +121,7 @@ public class MainActivity extends BaseActivity
     private TextView emptyListView;
 
     // QR code scanning
-    private void scanQRCode(){
+    private void scanQRCode() {
         new IntentIntegrator(MainActivity.this)
                 .setOrientationLocked(false)
                 .setBeepEnabled(false)
@@ -145,9 +140,12 @@ public class MainActivity extends BaseActivity
         if (authMethod == AuthMethod.DEVICE) {
             KeyguardManager km = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
 
-            assert km != null;      // The KEYGUARD_SERVICE should always be available
+            assert km != null; // The KEYGUARD_SERVICE should always be available
             if (km.isKeyguardSecure()) {
-                Intent authIntent = km.createConfirmDeviceCredentialIntent(getString(R.string.dialog_title_auth), getString(R.string.dialog_msg_auth));
+                Intent authIntent =
+                        km.createConfirmDeviceCredentialIntent(
+                                getString(R.string.dialog_title_auth),
+                                getString(R.string.dialog_msg_auth));
                 startActivityForResult(authIntent, Constants.INTENT_MAIN_AUTHENTICATE);
             }
         } else if (authMethod == AuthMethod.PASSWORD || authMethod == AuthMethod.PIN) {
@@ -172,8 +170,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void saveSortMode(SortMode mode) {
-        if (settings != null)
-            settings.setSortMode(mode);
+        if (settings != null) settings.setSortMode(mode);
     }
 
     private void populateAdapter() {
@@ -186,7 +183,11 @@ public class MainActivity extends BaseActivity
         int autoTime = Settings.Global.getInt(getContentResolver(), Settings.Global.AUTO_TIME, 0);
 
         if (autoTime == 0)
-            HideableDialog.ShowHidableDialog(this, R.string.dialog_title_auto_time, R.string.dialog_msg_auto_time, R.string.settings_key_dialog_hide_auto_time);
+            HideableDialog.ShowHidableDialog(
+                    this,
+                    R.string.dialog_title_auto_time,
+                    R.string.dialog_msg_auto_time,
+                    R.string.settings_key_dialog_hide_auto_time);
     }
 
     // Initialize the main application
@@ -196,8 +197,11 @@ public class MainActivity extends BaseActivity
 
         setTitle(R.string.app_name);
 
-        if (! settings.getScreenshotsEnabled())
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+        if (!settings.getScreenshotsEnabled())
+            getWindow()
+                    .setFlags(
+                            WindowManager.LayoutParams.FLAG_SECURE,
+                            WindowManager.LayoutParams.FLAG_SECURE);
 
         setContentView(R.layout.activity_main);
 
@@ -212,51 +216,56 @@ public class MainActivity extends BaseActivity
         if (settings.getAuthMethod() != AuthMethod.NONE && savedInstanceState == null)
             requireAuthentication = true;
 
-        setBroadcastCallback(() -> {
-            if (settings.getRelockOnScreenOff() && settings.getAuthMethod() != AuthMethod.NONE)
-                requireAuthentication = true;
-        });
+        setBroadcastCallback(
+                () -> {
+                    if (settings.getRelockOnScreenOff()
+                            && settings.getAuthMethod() != AuthMethod.NONE)
+                        requireAuthentication = true;
+                });
 
         ProcessLifecycleOwner.get().getLifecycle().addObserver(new ProcessLifecycleObserver());
 
-        if (!settings.getFirstTimeWarningShown())
-            showFirstTimeWarning();
-        else if (!requireAuthentication)
-            afterAuthentication();
+        if (!settings.getFirstTimeWarningShown()) showFirstTimeWarning();
+        else if (!requireAuthentication) afterAuthentication();
 
         speedDial = findViewById(R.id.speedDial);
         speedDial.inflate(R.menu.menu_fab);
 
         speedDial.getMainFab().setContentDescription(getString(R.string.button_add));
 
-        speedDial.setOnActionSelectedListener(speedDialActionItem -> {
-            int actionId = speedDialActionItem.getId();
+        speedDial.setOnActionSelectedListener(
+                speedDialActionItem -> {
+                    int actionId = speedDialActionItem.getId();
 
-            if (actionId == R.id.fabScanQR)
-                scanQRCode();
-            else if (actionId == R.id.fabEnterDetails)
-                ManualEntryDialog.show(MainActivity.this, settings, adapter);
-            else if (actionId == R.id.fabScanQRFromImage)
-                showOpenFileSelector(Constants.INTENT_MAIN_QR_OPEN_IMAGE);
+                    if (actionId == R.id.fabScanQR) scanQRCode();
+                    else if (actionId == R.id.fabEnterDetails)
+                        ManualEntryDialog.show(MainActivity.this, settings, adapter);
+                    else if (actionId == R.id.fabScanQRFromImage)
+                        showOpenFileSelector(Constants.INTENT_MAIN_QR_OPEN_IMAGE);
 
-            return false;
-        });
+                    return false;
+                });
 
-        speedDial.setOnChangeListener(new SpeedDialView.OnChangeListener() {
-            @Override
-            public boolean onMainActionSelected() {
-                return false;
-            }
+        speedDial.setOnChangeListener(
+                new SpeedDialView.OnChangeListener() {
+                    @Override
+                    public boolean onMainActionSelected() {
+                        return false;
+                    }
 
-            @Override
-            public void onToggleChanged(boolean isOpen) {
-                if (isOpen) {
-                    speedDial.getMainFab().setContentDescription(getString(R.string.button_close_menu));
-                } else {
-                    speedDial.getMainFab().setContentDescription(getString(R.string.button_add));
-                }
-            }
-        });
+                    @Override
+                    public void onToggleChanged(boolean isOpen) {
+                        if (isOpen) {
+                            speedDial
+                                    .getMainFab()
+                                    .setContentDescription(getString(R.string.button_close_menu));
+                        } else {
+                            speedDial
+                                    .getMainFab()
+                                    .setContentDescription(getString(R.string.button_add));
+                        }
+                    }
+                });
 
         progressBar = findViewById(R.id.progressBar);
         emptyListView = findViewById(R.id.emptyListView);
@@ -269,43 +278,45 @@ public class MainActivity extends BaseActivity
 
         tagsDrawerAdapter = new TagsAdapter(this, new HashMap<>());
         adapter = new EntriesCardAdapter(this, tagsDrawerAdapter);
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                hideProgressBar();
-            }
+        adapter.registerAdapterDataObserver(
+                new RecyclerView.AdapterDataObserver() {
+                    @Override
+                    public void onChanged() {
+                        super.onChanged();
+                        hideProgressBar();
+                    }
 
-            @Override
-            public void onItemRangeChanged(int positionStart, int itemCount) {
-                super.onItemRangeChanged(positionStart, itemCount);
-                hideProgressBar();
-            }
+                    @Override
+                    public void onItemRangeChanged(int positionStart, int itemCount) {
+                        super.onItemRangeChanged(positionStart, itemCount);
+                        hideProgressBar();
+                    }
 
-            @Override
-            public void onItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
-                super.onItemRangeChanged(positionStart, itemCount, payload);
-                hideProgressBar();
-            }
+                    @Override
+                    public void onItemRangeChanged(
+                            int positionStart, int itemCount, @Nullable Object payload) {
+                        super.onItemRangeChanged(positionStart, itemCount, payload);
+                        hideProgressBar();
+                    }
 
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                super.onItemRangeInserted(positionStart, itemCount);
-                hideProgressBar();
-            }
+                    @Override
+                    public void onItemRangeInserted(int positionStart, int itemCount) {
+                        super.onItemRangeInserted(positionStart, itemCount);
+                        hideProgressBar();
+                    }
 
-            @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
-                super.onItemRangeRemoved(positionStart, itemCount);
-                hideProgressBar();
-            }
+                    @Override
+                    public void onItemRangeRemoved(int positionStart, int itemCount) {
+                        super.onItemRangeRemoved(positionStart, itemCount);
+                        hideProgressBar();
+                    }
 
-            @Override
-            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-                super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-                hideProgressBar();
-            }
-        });
+                    @Override
+                    public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                        super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+                        hideProgressBar();
+                    }
+                });
 
         if (savedInstanceState != null) {
             byte[] encKey = savedInstanceState.getByteArray("encKey");
@@ -324,44 +335,54 @@ public class MainActivity extends BaseActivity
         NotificationHelper.initializeNotificationChannels(this);
         restoreSortMode();
 
-        float durationScale = android.provider.Settings.Global.getFloat(this.getContentResolver(), android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 0);
-        if (durationScale == 0)
-            durationScale = 1;
+        float durationScale =
+                android.provider.Settings.Global.getFloat(
+                        this.getContentResolver(),
+                        android.provider.Settings.Global.ANIMATOR_DURATION_SCALE,
+                        0);
+        if (durationScale == 0) durationScale = 1;
 
         animatorDuration = (long) (1000 / durationScale);
 
-        adapter.setCallback(new EntriesCardAdapter.Callback() {
-            @Override
-            public void onMoveEventStart() {
-                stopUpdater();
-            }
+        adapter.setCallback(
+                new EntriesCardAdapter.Callback() {
+                    @Override
+                    public void onMoveEventStart() {
+                        stopUpdater();
+                    }
 
-            @Override
-            public void onMoveEventStop() {
-                startUpdater();
-            }
-        });
+                    @Override
+                    public void onMoveEventStop() {
+                        startUpdater();
+                    }
+                });
 
         handler = new Handler(Looper.getMainLooper());
-        handlerTask = new Runnable()
-        {
-            @Override
-            public void run() {
-                if (!settings.isHideGlobalTimeoutEnabled()) {
-                    int progress = (int) (TokenCalculator.TOTP_DEFAULT_PERIOD - (System.currentTimeMillis() / 1000) % TokenCalculator.TOTP_DEFAULT_PERIOD);
-                    progressBar.setProgress(progress * 100);
+        handlerTask =
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!settings.isHideGlobalTimeoutEnabled()) {
+                            int progress =
+                                    (int)
+                                            (TokenCalculator.TOTP_DEFAULT_PERIOD
+                                                    - (System.currentTimeMillis() / 1000)
+                                                            % TokenCalculator.TOTP_DEFAULT_PERIOD);
+                            progressBar.setProgress(progress * 100);
 
-                    ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", (progress - 1) * 100);
-                    animation.setDuration(animatorDuration);
-                    animation.setInterpolator(new LinearInterpolator());
-                    animation.start();
-                }
+                            ObjectAnimator animation =
+                                    ObjectAnimator.ofInt(
+                                            progressBar, "progress", (progress - 1) * 100);
+                            animation.setDuration(animatorDuration);
+                            animation.setInterpolator(new LinearInterpolator());
+                            animation.start();
+                        }
 
-                adapter.updateTimeBasedTokens();
+                        adapter.updateTimeBasedTokens();
 
-                handler.postDelayed(this, 1000);
-            }
-        };
+                        handler.postDelayed(this, 1000);
+                    }
+                };
 
         setupDrawer();
 
@@ -369,14 +390,14 @@ public class MainActivity extends BaseActivity
             setFilterString(savedInstanceState.getString("filterString", ""));
         }
 
-        if (settings.isFocusSearchOnStartEnabled())
-            focusSearchMenu();
+        if (settings.isFocusSearchOnStartEnabled()) focusSearchMenu();
     }
 
     private void checkIntent() {
         Intent callingIntent = getIntent();
         if (callingIntent != null && callingIntent.getAction() != null) {
-            // Cache and reset the action to prevent the same intent from being evaluated multiple times
+            // Cache and reset the action to prevent the same intent from being evaluated multiple
+            // times
             String intentAction = callingIntent.getAction();
             callingIntent.setAction(null);
 
@@ -396,9 +417,17 @@ public class MainActivity extends BaseActivity
                         entry.updateOTP(false);
                         entry.setLastUsed(System.currentTimeMillis());
                         adapter.addEntry(entry);
-                        Toast.makeText(this, R.string.toast_intent_creation_succeeded, Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                                        this,
+                                        R.string.toast_intent_creation_succeeded,
+                                        Toast.LENGTH_LONG)
+                                .show();
                     } catch (Exception e) {
-                        Toast.makeText(this, R.string.toast_intent_creation_failed, Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                                        this,
+                                        R.string.toast_intent_creation_failed,
+                                        Toast.LENGTH_LONG)
+                                .show();
                     }
                     break;
             }
@@ -439,8 +468,7 @@ public class MainActivity extends BaseActivity
                 checkIntent();
             }
 
-            if (setCountDownTimerNow())
-                countDownTimer.start();
+            if (setCountDownTimerNow()) countDownTimer.start();
         }
 
         if (filterString != null) {
@@ -449,21 +477,19 @@ public class MainActivity extends BaseActivity
         }
 
         View cardList = findViewById(R.id.cardList);
-        if(cardList.getVisibility() == View.INVISIBLE)
-            cardList.setVisibility(View.VISIBLE);
+        if (cardList.getVisibility() == View.INVISIBLE) cardList.setVisibility(View.VISIBLE);
 
         startUpdater();
     }
 
     @Override
     public void onPause() {
-        if(settings.getAuthMethod() == AuthMethod.DEVICE)
+        if (settings.getAuthMethod() == AuthMethod.DEVICE)
             runOnUiThread(() -> findViewById(R.id.cardList).setVisibility(View.INVISIBLE));
         super.onPause();
         stopUpdater();
 
-        if (countDownTimer != null)
-            countDownTimer.cancel();
+        if (countDownTimer != null) countDownTimer.cancel();
     }
 
     @Override
@@ -478,26 +504,26 @@ public class MainActivity extends BaseActivity
     }
 
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (key.equals(getString(R.string.settings_key_label_size)) ||
-                key.equals(getString(R.string.settings_key_label_display)) ||
-                key.equals(getString(R.string.settings_key_split_group_size)) ||
-                key.equals(getString(R.string.settings_key_thumbnail_size))) {
+        if (key.equals(getString(R.string.settings_key_label_size))
+                || key.equals(getString(R.string.settings_key_label_display))
+                || key.equals(getString(R.string.settings_key_split_group_size))
+                || key.equals(getString(R.string.settings_key_thumbnail_size))) {
             adapter.notifyDataSetChanged();
         } else if (key.equals(getString(R.string.settings_key_search_includes))) {
             adapter.clearFilter();
-        } else if (key.equals(getString(R.string.settings_key_tap_single)) ||
-                key.equals(getString(R.string.settings_key_tap_double)) ||
-                key.equals(getString(R.string.settings_key_theme)) ||
-                key.equals(getString(R.string.settings_key_lang)) ||
-                key.equals(getString(R.string.settings_key_enable_screenshot)) ||
-                key.equals(getString(R.string.settings_key_tag_functionality)) ||
-                key.equals(getString(R.string.settings_key_label_highlight_token)) ||
-                key.equals(getString(R.string.settings_key_card_layout)) ||
-                key.equals(getString(R.string.settings_key_theme_mode)) ||
-                key.equals(getString(R.string.settings_key_theme_black_auto)) ||
-                key.equals(getString(R.string.settings_key_hide_global_timeout)) ||
-                key.equals(getString(R.string.settings_key_hide_issuer)) ||
-                key.equals(getString(R.string.settings_key_show_prev_token))) {
+        } else if (key.equals(getString(R.string.settings_key_tap_single))
+                || key.equals(getString(R.string.settings_key_tap_double))
+                || key.equals(getString(R.string.settings_key_theme))
+                || key.equals(getString(R.string.settings_key_lang))
+                || key.equals(getString(R.string.settings_key_enable_screenshot))
+                || key.equals(getString(R.string.settings_key_tag_functionality))
+                || key.equals(getString(R.string.settings_key_label_highlight_token))
+                || key.equals(getString(R.string.settings_key_card_layout))
+                || key.equals(getString(R.string.settings_key_theme_mode))
+                || key.equals(getString(R.string.settings_key_theme_black_auto))
+                || key.equals(getString(R.string.settings_key_hide_global_timeout))
+                || key.equals(getString(R.string.settings_key_hide_issuer))
+                || key.equals(getString(R.string.settings_key_show_prev_token))) {
             recreateActivity = true;
         }
     }
@@ -514,8 +540,8 @@ public class MainActivity extends BaseActivity
         super.onActivityResult(requestCode, resultCode, intent);
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if(result != null) {
-            if(result.getContents() != null) {
+        if (result != null) {
+            if (result.getContents() != null) {
                 addQRCode(result.getContents());
             }
         } else if (requestCode == Constants.INTENT_MAIN_BACKUP && resultCode == RESULT_OK) {
@@ -524,11 +550,11 @@ public class MainActivity extends BaseActivity
                 refreshTags();
             }
         } else if (requestCode == Constants.INTENT_MAIN_SETTINGS && resultCode == RESULT_OK) {
-            boolean encryptionChanged = intent.getBooleanExtra(Constants.EXTRA_SETTINGS_ENCRYPTION_CHANGED, false);
+            boolean encryptionChanged =
+                    intent.getBooleanExtra(Constants.EXTRA_SETTINGS_ENCRYPTION_CHANGED, false);
             byte[] newKey = intent.getByteArrayExtra(Constants.EXTRA_SETTINGS_ENCRYPTION_KEY);
 
-            if (encryptionChanged)
-                updateEncryption(newKey);
+            if (encryptionChanged) updateEncryption(newKey);
 
             if (recreateActivity) {
                 cacheEncKey = true;
@@ -536,7 +562,11 @@ public class MainActivity extends BaseActivity
             }
         } else if (requestCode == Constants.INTENT_MAIN_AUTHENTICATE) {
             if (resultCode != RESULT_OK) {
-                Toast.makeText(getBaseContext(), R.string.toast_auth_failed_fatal, Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                                getBaseContext(),
+                                R.string.toast_auth_failed_fatal,
+                                Toast.LENGTH_LONG)
+                        .show();
                 finishAndRemoveTask();
             } else {
                 requireAuthentication = false;
@@ -563,7 +593,8 @@ public class MainActivity extends BaseActivity
             if (setupFinished) {
                 requireAuthentication = false;
 
-                byte [] encryptionKey = intent.getByteArrayExtra(Constants.EXTRA_INTRO_ENCRYPTION_KEY);
+                byte[] encryptionKey =
+                        intent.getByteArrayExtra(Constants.EXTRA_INTRO_ENCRYPTION_KEY);
                 updateEncryption(encryptionKey);
 
                 afterAuthentication();
@@ -588,8 +619,7 @@ public class MainActivity extends BaseActivity
             }
         }
 
-        if (encryptionKey != null)
-            adapter.setEncryptionKey(encryptionKey);
+        if (encryptionKey != null) adapter.setEncryptionKey(encryptionKey);
 
         populateAdapter();
     }
@@ -624,42 +654,42 @@ public class MainActivity extends BaseActivity
 
         searchMenu = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) searchMenu.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+        searchView.setOnQueryTextListener(
+                new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                setFilterString(newText);
-                return false;
-            }
-        });
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        setFilterString(newText);
+                        return false;
+                    }
+                });
 
-        searchMenu.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                speedDial.setVisibility(View.GONE);
-                touchHelperCallback.setDragEnabled(false);
-                if (sortMenu != null)
-                    sortMenu.setVisible(false);
-                return true;
-            }
+        searchMenu.setOnActionExpandListener(
+                new MenuItem.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                        speedDial.setVisibility(View.GONE);
+                        touchHelperCallback.setDragEnabled(false);
+                        if (sortMenu != null) sortMenu.setVisible(false);
+                        return true;
+                    }
 
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                speedDial.setVisibility(View.VISIBLE);
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                        speedDial.setVisibility(View.VISIBLE);
 
-                if (adapter == null || adapter.getSortMode() == SortMode.UNSORTED)
-                    touchHelperCallback.setDragEnabled(true);
+                        if (adapter == null || adapter.getSortMode() == SortMode.UNSORTED)
+                            touchHelperCallback.setDragEnabled(true);
 
-                if (sortMenu != null)
-                    sortMenu.setVisible(true);
+                        if (sortMenu != null) sortMenu.setVisible(true);
 
-                return true;
-            }
-        });
+                        return true;
+                    }
+                });
 
         if (focusSearchOnCreate) {
             searchMenu.expandActionView();
@@ -670,17 +700,13 @@ public class MainActivity extends BaseActivity
     }
 
     private void focusSearchMenu() {
-        if (searchMenu != null)
-            searchMenu.expandActionView();
-        else
-            focusSearchOnCreate = true;
+        if (searchMenu != null) searchMenu.expandActionView();
+        else focusSearchOnCreate = true;
     }
 
     private void setFilterString(String newText) {
-        if (newText.isEmpty())
-            adapter.filterByTags(tagsDrawerAdapter.getActiveTags());
-        else
-            adapter.getFilter().filter(newText);
+        if (newText.isEmpty()) adapter.filterByTags(tagsDrawerAdapter.getActiveTags());
+        else adapter.getFilter().filter(newText);
 
         this.filterString = newText;
     }
@@ -691,14 +717,17 @@ public class MainActivity extends BaseActivity
 
         if (id == R.id.action_backup) {
             Intent backupIntent = new Intent(this, BackupActivity.class);
-            backupIntent.putExtra(Constants.EXTRA_BACKUP_ENCRYPTION_KEY, adapter.getEncryptionKey().getEncoded());
+            backupIntent.putExtra(
+                    Constants.EXTRA_BACKUP_ENCRYPTION_KEY, adapter.getEncryptionKey().getEncoded());
             startActivityForResult(backupIntent, Constants.INTENT_MAIN_BACKUP);
         } else if (id == R.id.action_settings) {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             if (adapter.getEncryptionKey() != null)
-                settingsIntent.putExtra(Constants.EXTRA_SETTINGS_ENCRYPTION_KEY, adapter.getEncryptionKey().getEncoded());
+                settingsIntent.putExtra(
+                        Constants.EXTRA_SETTINGS_ENCRYPTION_KEY,
+                        adapter.getEncryptionKey().getEncoded());
             startActivityForResult(settingsIntent, Constants.INTENT_MAIN_SETTINGS);
-        } else if (id == R.id.action_about){
+        } else if (id == R.id.action_about) {
             Intent aboutIntent = new Intent(this, AboutActivity.class);
             startActivity(aboutIntent);
             return true;
@@ -714,7 +743,7 @@ public class MainActivity extends BaseActivity
             item.setChecked(true);
             sortMenu.setIcon(R.drawable.ic_sort_inverted_label_white);
             saveSortMode(SortMode.ISSUER);
-            if(adapter != null) {
+            if (adapter != null) {
                 adapter.setSortMode(SortMode.ISSUER);
                 touchHelperCallback.setDragEnabled(false);
             }
@@ -734,8 +763,7 @@ public class MainActivity extends BaseActivity
                 adapter.setSortMode(SortMode.LAST_USED);
                 touchHelperCallback.setDragEnabled(false);
             }
-            if (! settings.getUsedTokensDialogShown())
-                showUsedTokensDialog();
+            if (!settings.getUsedTokensDialogShown()) showUsedTokensDialog();
         } else if (id == R.id.menu_sort_most_used) {
             item.setChecked(true);
             sortMenu.setIcon(R.drawable.ic_sort_inverted_time_white);
@@ -744,8 +772,7 @@ public class MainActivity extends BaseActivity
                 adapter.setSortMode(SortMode.MOST_USED);
                 touchHelperCallback.setDragEnabled(false);
             }
-            if (! settings.getUsedTokensDialogShown())
-                showUsedTokensDialog();
+            if (!settings.getUsedTokensDialogShown()) showUsedTokensDialog();
         } else if (tagsToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -757,7 +784,10 @@ public class MainActivity extends BaseActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.dialog_title_used_tokens)
                 .setMessage(R.string.dialog_msg_used_tokens)
-                .setPositiveButton(android.R.string.ok, (DialogInterface dialogInterface, int i) -> settings.setUsedTokensDialogShown(true))
+                .setPositiveButton(
+                        android.R.string.ok,
+                        (DialogInterface dialogInterface, int i) ->
+                                settings.setUsedTokensDialogShown(true))
                 .create()
                 .show();
     }
@@ -766,27 +796,29 @@ public class MainActivity extends BaseActivity
         tagsDrawerListView = findViewById(R.id.tags_list_in_drawer);
         tagsDrawerLayout = findViewById(R.id.drawer_layout);
 
-        tagsToggle = new ActionBarDrawerToggle(this, tagsDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
+        tagsToggle =
+                new ActionBarDrawerToggle(
+                        this, tagsDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        super.onDrawerOpened(drawerView);
 
-                if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.label_tags);
+                        if (getSupportActionBar() != null)
+                            getSupportActionBar().setTitle(R.string.label_tags);
 
-                invalidateOptionsMenu();
-            }
+                        invalidateOptionsMenu();
+                    }
 
-            @Override
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
+                    @Override
+                    public void onDrawerClosed(View view) {
+                        super.onDrawerClosed(view);
 
-                if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.app_name);
+                        if (getSupportActionBar() != null)
+                            getSupportActionBar().setTitle(R.string.app_name);
 
-                invalidateOptionsMenu();
-            }
-        };
+                        invalidateOptionsMenu();
+                    }
+                };
 
         tagsToggle.setDrawerIndicatorEnabled(true);
         tagsDrawerLayout.addDrawerListener(tagsToggle);
@@ -794,147 +826,151 @@ public class MainActivity extends BaseActivity
         final CheckedTextView noTagsButton = findViewById(R.id.no_tags_entries);
         final CheckedTextView allTagsButton = findViewById(R.id.all_tags_in_drawer);
 
-        allTagsButton.setOnClickListener(view -> {
-            CheckedTextView checkedTextView = ((CheckedTextView)view);
-            checkedTextView.setChecked(!checkedTextView.isChecked());
+        allTagsButton.setOnClickListener(
+                view -> {
+                    CheckedTextView checkedTextView = ((CheckedTextView) view);
+                    checkedTextView.setChecked(!checkedTextView.isChecked());
 
-            settings.setAllTagsToggle(checkedTextView.isChecked());
+                    settings.setAllTagsToggle(checkedTextView.isChecked());
 
-            for(int i = 0; i < tagsDrawerListView.getChildCount(); i++) {
-                CheckedTextView childCheckBox = (CheckedTextView) tagsDrawerListView.getChildAt(i);
-                childCheckBox.setChecked(checkedTextView.isChecked());
-            }
+                    for (int i = 0; i < tagsDrawerListView.getChildCount(); i++) {
+                        CheckedTextView childCheckBox =
+                                (CheckedTextView) tagsDrawerListView.getChildAt(i);
+                        childCheckBox.setChecked(checkedTextView.isChecked());
+                    }
 
-            for (String tag: tagsDrawerAdapter.getTags()) {
-                tagsDrawerAdapter.setTagState(tag, checkedTextView.isChecked());
-                settings.setTagToggle(tag, checkedTextView.isChecked());
-            }
+                    for (String tag : tagsDrawerAdapter.getTags()) {
+                        tagsDrawerAdapter.setTagState(tag, checkedTextView.isChecked());
+                        settings.setTagToggle(tag, checkedTextView.isChecked());
+                    }
 
-            if(checkedTextView.isChecked()) {
-                adapter.filterByTags(tagsDrawerAdapter.getActiveTags());
-            } else {
-                adapter.filterByTags(new ArrayList<>());
-            }
-        });
+                    if (checkedTextView.isChecked()) {
+                        adapter.filterByTags(tagsDrawerAdapter.getActiveTags());
+                    } else {
+                        adapter.filterByTags(new ArrayList<>());
+                    }
+                });
         allTagsButton.setChecked(settings.getAllTagsToggle());
 
-        noTagsButton.setOnClickListener(view -> {
-            CheckedTextView checkedTextView = ((CheckedTextView)view);
-            checkedTextView.setChecked(!checkedTextView.isChecked());
+        noTagsButton.setOnClickListener(
+                view -> {
+                    CheckedTextView checkedTextView = ((CheckedTextView) view);
+                    checkedTextView.setChecked(!checkedTextView.isChecked());
 
-            if(settings.getTagFunctionality() == Constants.TagFunctionality.SINGLE) {
-                checkedTextView.setChecked(true);
-                allTagsButton.setChecked(false);
-                settings.setAllTagsToggle(false);
+                    if (settings.getTagFunctionality() == Constants.TagFunctionality.SINGLE) {
+                        checkedTextView.setChecked(true);
+                        allTagsButton.setChecked(false);
+                        settings.setAllTagsToggle(false);
 
-                for (String tag: tagsDrawerAdapter.getTags()) {
-                    settings.setTagToggle(tag, false);
-                    tagsDrawerAdapter.setTagState(tag, false);
-                }
-            }
+                        for (String tag : tagsDrawerAdapter.getTags()) {
+                            settings.setTagToggle(tag, false);
+                            tagsDrawerAdapter.setTagState(tag, false);
+                        }
+                    }
 
-            settings.setNoTagsToggle(checkedTextView.isChecked());
-            adapter.filterByTags(tagsDrawerAdapter.getActiveTags());
-        });
+                    settings.setNoTagsToggle(checkedTextView.isChecked());
+                    adapter.filterByTags(tagsDrawerAdapter.getActiveTags());
+                });
         noTagsButton.setChecked(settings.getNoTagsToggle());
 
         tagsDrawerListView.setAdapter(tagsDrawerAdapter);
-        tagsDrawerListView.setOnItemClickListener((parent, view, position, id) -> {
-            CheckedTextView checkedTextView = ((CheckedTextView)view);
+        tagsDrawerListView.setOnItemClickListener(
+                (parent, view, position, id) -> {
+                    CheckedTextView checkedTextView = ((CheckedTextView) view);
 
-            if(settings.getTagFunctionality() == Constants.TagFunctionality.SINGLE) {
-                allTagsButton.setChecked(false);
-                settings.setAllTagsToggle(false);
-                noTagsButton.setChecked(false);
-                settings.setNoTagsToggle(false);
+                    if (settings.getTagFunctionality() == Constants.TagFunctionality.SINGLE) {
+                        allTagsButton.setChecked(false);
+                        settings.setAllTagsToggle(false);
+                        noTagsButton.setChecked(false);
+                        settings.setNoTagsToggle(false);
 
-                for (String tag: tagsDrawerAdapter.getTags()) {
-                    settings.setTagToggle(tag, false);
-                    tagsDrawerAdapter.setTagState(tag, false);
-                }
-                checkedTextView.setChecked(true);
-            }else {
-                checkedTextView.setChecked(!checkedTextView.isChecked());
-            }
+                        for (String tag : tagsDrawerAdapter.getTags()) {
+                            settings.setTagToggle(tag, false);
+                            tagsDrawerAdapter.setTagState(tag, false);
+                        }
+                        checkedTextView.setChecked(true);
+                    } else {
+                        checkedTextView.setChecked(!checkedTextView.isChecked());
+                    }
 
-            settings.setTagToggle(checkedTextView.getText().toString(), checkedTextView.isChecked());
-            tagsDrawerAdapter.setTagState(checkedTextView.getText().toString(), checkedTextView.isChecked());
+                    settings.setTagToggle(
+                            checkedTextView.getText().toString(), checkedTextView.isChecked());
+                    tagsDrawerAdapter.setTagState(
+                            checkedTextView.getText().toString(), checkedTextView.isChecked());
 
-            if (! checkedTextView.isChecked()) {
-                allTagsButton.setChecked(false);
-                settings.setAllTagsToggle(false);
-            }
+                    if (!checkedTextView.isChecked()) {
+                        allTagsButton.setChecked(false);
+                        settings.setAllTagsToggle(false);
+                    }
 
-            if (tagsDrawerAdapter.allTagsActive()) {
-                allTagsButton.setChecked(true);
-                settings.setAllTagsToggle(true);
-            }
+                    if (tagsDrawerAdapter.allTagsActive()) {
+                        allTagsButton.setChecked(true);
+                        settings.setAllTagsToggle(true);
+                    }
 
-            adapter.filterByTags(tagsDrawerAdapter.getActiveTags());
-        });
+                    adapter.filterByTags(tagsDrawerAdapter.getActiveTags());
+                });
 
         adapter.filterByTags(tagsDrawerAdapter.getActiveTags());
     }
 
     public void refreshTags() {
         HashMap<String, Boolean> tagsHashMap = new HashMap<>();
-        for(String tag: tagsDrawerAdapter.getTags()) {
+        for (String tag : tagsDrawerAdapter.getTags()) {
             tagsHashMap.put(tag, false);
         }
-        for(String tag: tagsDrawerAdapter.getActiveTags()) {
+        for (String tag : tagsDrawerAdapter.getActiveTags()) {
             tagsHashMap.put(tag, true);
         }
-        for(String tag: adapter.getTags()) {
-            if(!tagsHashMap.containsKey(tag))
-                tagsHashMap.put(tag, true);
+        for (String tag : adapter.getTags()) {
+            if (!tagsHashMap.containsKey(tag)) tagsHashMap.put(tag, true);
         }
         tagsDrawerAdapter.setTags(tagsHashMap);
         adapter.filterByTags(tagsDrawerAdapter.getActiveTags());
     }
 
     @Override
-    public void onUserInteraction(){
+    public void onUserInteraction() {
         super.onUserInteraction();
 
         // Refresh Blackout Timer
-        if (countDownTimer != null)
-            countDownTimer.cancel();
+        if (countDownTimer != null) countDownTimer.cancel();
 
-        if (setCountDownTimerNow())
-            countDownTimer.start();
+        if (setCountDownTimerNow()) countDownTimer.start();
     }
 
     private boolean setCountDownTimerNow() {
         int secondsToBlackout = 1000 * settings.getAuthInactivityDelay();
 
-        if (settings.getAuthMethod() == AuthMethod.NONE || !settings.getAuthInactivity() || secondsToBlackout == 0)
-            return false;
+        if (settings.getAuthMethod() == AuthMethod.NONE
+                || !settings.getAuthInactivity()
+                || secondsToBlackout == 0) return false;
 
-        countDownTimer = new CountDownTimer(secondsToBlackout, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-            }
+        countDownTimer =
+                new CountDownTimer(secondsToBlackout, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {}
 
-            @Override
-            public void onFinish() {
-                authenticate(R.string.auth_msg_authenticate);
-                this.cancel();
-            }
-        };
+                    @Override
+                    public void onFinish() {
+                        authenticate(R.string.auth_msg_authenticate);
+                        this.cancel();
+                    }
+                };
 
         return true;
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void showOpenFileSelector(int intentId){
+    private void showOpenFileSelector(int intentId) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
         startActivityForResult(intent, intentId);
     }
-    
-    private void addQRCode(String result){
-        if(!TextUtils.isEmpty(result)) {
+
+    private void addQRCode(String result) {
+        if (!TextUtils.isEmpty(result)) {
             try {
                 Entry e = new Entry(result);
                 e.updateOTP(false);
@@ -981,14 +1017,16 @@ public class MainActivity extends BaseActivity
     }
 
     /**
-     * This function will hide the progress bar if the token list is empty along with
-     * showing a view which has instruction on how to add the tokens
-     * */
-    private void hideProgressBar(){
+     * This function will hide the progress bar if the token list is empty along with showing a view
+     * which has instruction on how to add the tokens
+     */
+    private void hideProgressBar() {
         int itemCount = adapter.getItemCount();
-        progressBar.setVisibility((settings.isHideGlobalTimeoutEnabled() || itemCount <= 0) ? View.GONE : View.VISIBLE);
+        progressBar.setVisibility(
+                (settings.isHideGlobalTimeoutEnabled() || itemCount <= 0)
+                        ? View.GONE
+                        : View.VISIBLE);
         emptyListView.setVisibility(itemCount > 0 ? View.GONE : View.VISIBLE);
-
     }
 
     @Override

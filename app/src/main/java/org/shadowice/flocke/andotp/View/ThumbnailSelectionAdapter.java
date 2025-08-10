@@ -24,19 +24,17 @@
 package org.shadowice.flocke.andotp.View;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-
-import org.shadowice.flocke.andotp.Utilities.EntryThumbnail;
-import org.shadowice.flocke.andotp.Utilities.Settings;
-
+import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.shadowice.flocke.andotp.Utilities.EntryThumbnail;
+import org.shadowice.flocke.andotp.Utilities.Settings;
 
 public class ThumbnailSelectionAdapter extends BaseAdapter {
     private Context context;
@@ -57,7 +55,7 @@ public class ThumbnailSelectionAdapter extends BaseAdapter {
     void filter(String filter) {
         items.clear();
         for (EntryThumbnail.EntryThumbnails thumb : EntryThumbnail.EntryThumbnails.values()) {
-            if(thumb.name().toLowerCase().contains(filter.toLowerCase())) {
+            if (thumb.name().toLowerCase().contains(filter.toLowerCase())) {
                 items.add(thumb);
             }
         }
@@ -71,14 +69,12 @@ public class ThumbnailSelectionAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-        if(i < getCount())
-            return items.get(i);
-        else
-            return EntryThumbnail.EntryThumbnails.Default;
+        if (i < getCount()) return items.get(i);
+        else return EntryThumbnail.EntryThumbnails.Default;
     }
 
     public int getRealIndex(int displayPosition) {
-        return ((EntryThumbnail.EntryThumbnails)getItem(displayPosition)).ordinal();
+        return ((EntryThumbnail.EntryThumbnails) getItem(displayPosition)).ordinal();
     }
 
     @Override
@@ -98,9 +94,10 @@ public class ThumbnailSelectionAdapter extends BaseAdapter {
             imageView = (ImageView) view;
         }
 
-        EntryThumbnail.EntryThumbnails thumb = (EntryThumbnail.EntryThumbnails)getItem(i);
+        EntryThumbnail.EntryThumbnails thumb = (EntryThumbnail.EntryThumbnails) getItem(i);
 
-        imageView.setImageBitmap(EntryThumbnail.getThumbnailGraphic(context, issuer, label, thumbnailSize, thumb));
+        imageView.setImageBitmap(
+                EntryThumbnail.getThumbnailGraphic(context, issuer, label, thumbnailSize, thumb));
         imageView.setContentDescription(thumb.name());
 
         return imageView;

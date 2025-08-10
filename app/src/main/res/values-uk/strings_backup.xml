@@ -6,7 +6,7 @@
     <string name="backup_desc_openpgp_provider">Вам необхідно встановити додаток, який генерує OpenPGP ключі та увімкнути
         його в <b>Налаштуваннях</b>, щоб використовувати цю функцію.
     </string>
-    <string name="backup_desc_openpgp_keyid">Вам необхідно вибрати OpenPGP ключ у <b>Налаштування</b>, 
+    <string name="backup_desc_openpgp_keyid">Вам необхідно вибрати OpenPGP ключ у <b>Налаштування</b>,
         перед тим, як почати створювати зашифровану резервну копію.
     </string>
     <!-- Dialogs -->

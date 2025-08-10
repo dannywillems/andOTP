@@ -22,14 +22,12 @@
 
 package org.shadowice.flocke.andotp.Activities;
 
+import static org.shadowice.flocke.andotp.Utilities.Constants.AuthMethod;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import com.google.android.material.textfield.TextInputLayout;
-
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.Editable;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
@@ -43,7 +41,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.appcompat.widget.Toolbar;
+import com.google.android.material.textfield.TextInputLayout;
 import org.shadowice.flocke.andotp.R;
 import org.shadowice.flocke.andotp.Tasks.AuthenticationTask;
 import org.shadowice.flocke.andotp.Tasks.AuthenticationTask.Result;
@@ -51,11 +50,10 @@ import org.shadowice.flocke.andotp.Utilities.Constants;
 import org.shadowice.flocke.andotp.Utilities.EditorActionHelper;
 import org.shadowice.flocke.andotp.View.AutoFillable.AutoFillableTextInputEditText;
 
-import static org.shadowice.flocke.andotp.Utilities.Constants.AuthMethod;
-
 public class AuthenticateActivity extends BackgroundTaskActivity<AuthenticationTask.Result>
         implements EditText.OnEditorActionListener, View.OnClickListener {
-    private final AutoFillableTextInputEditText.AutoFillTextListener autoFillTextListener = text -> startAuthTask(text.toString());
+    private final AutoFillableTextInputEditText.AutoFillTextListener autoFillTextListener =
+            text -> startAuthTask(text.toString());
 
     private AuthMethod authMethod;
     private String newEncryption = "";
@@ -70,7 +68,7 @@ public class AuthenticateActivity extends BackgroundTaskActivity<AuthenticationT
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (! settings.getScreenshotsEnabled())
+        if (!settings.getScreenshotsEnabled())
             getWindow().setFlags(LayoutParams.FLAG_SECURE, LayoutParams.FLAG_SECURE);
 
         authMethod = settings.getAuthMethod();
@@ -83,8 +81,10 @@ public class AuthenticateActivity extends BackgroundTaskActivity<AuthenticationT
 
         // If our password is still empty at this point, we can't do anything.
         if (existingAuthCredentials.isEmpty()) {
-            int missingPwResId = (authMethod == AuthMethod.PASSWORD)
-                    ? R.string.auth_toast_password_missing : R.string.auth_toast_pin_missing;
+            int missingPwResId =
+                    (authMethod == AuthMethod.PASSWORD)
+                            ? R.string.auth_toast_password_missing
+                            : R.string.auth_toast_pin_missing;
             Toast.makeText(this, missingPwResId, Toast.LENGTH_LONG).show();
             finishWithResult(true, null);
         }
@@ -98,11 +98,12 @@ public class AuthenticateActivity extends BackgroundTaskActivity<AuthenticationT
         initToolbar();
         initPasswordViews();
 
-        setBroadcastCallback(() -> {
-                if (settings.getRelockOnScreenOff()) {
-                    cancelBackgroundTask();
-                }
-            });
+        setBroadcastCallback(
+                () -> {
+                    if (settings.getRelockOnScreenOff()) {
+                        cancelBackgroundTask();
+                    }
+                });
 
         getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
@@ -125,28 +126,36 @@ public class AuthenticateActivity extends BackgroundTaskActivity<AuthenticationT
     }
 
     private void initPasswordLabelView(View v) {
-        int labelMsg = getIntent().getIntExtra(Constants.EXTRA_AUTH_MESSAGE, R.string.auth_msg_authenticate);
+        int labelMsg =
+                getIntent()
+                        .getIntExtra(Constants.EXTRA_AUTH_MESSAGE, R.string.auth_msg_authenticate);
         TextView passwordLabel = v.findViewById(R.id.passwordLabel);
         passwordLabel.setText(labelMsg);
     }
 
     private void initPasswordLayoutView(View v) {
         passwordLayout = v.findViewById(R.id.passwordLayout);
-        int hintResId = (authMethod == AuthMethod.PASSWORD) ? R.string.auth_hint_password : R.string.auth_hint_pin;
+        int hintResId =
+                (authMethod == AuthMethod.PASSWORD)
+                        ? R.string.auth_hint_password
+                        : R.string.auth_hint_pin;
         passwordLayout.setHint(getString(hintResId));
         if (settings.getBlockAccessibility()) {
-            passwordLayout.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+            passwordLayout.setImportantForAccessibility(
+                    View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && settings.getBlockAutofill()) {
-            passwordLayout.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
+            passwordLayout.setImportantForAutofill(
+                    View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
         }
     }
 
     private void initPasswordInputView(View v) {
         passwordInput = v.findViewById(R.id.passwordEdit);
-        int inputType = (authMethod == AuthMethod.PASSWORD)
-                ? (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
-                : (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        int inputType =
+                (authMethod == AuthMethod.PASSWORD)
+                        ? (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+                        : (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         passwordInput.setInputType(inputType);
         passwordInput.setTransformationMethod(new PasswordTransformationMethod());
         passwordInput.setOnEditorActionListener(this);
@@ -167,7 +176,8 @@ public class AuthenticateActivity extends BackgroundTaskActivity<AuthenticationT
     protected void onReturnToCanceledTask() {
         passwordInput.setText("");
         passwordInput.requestFocus();
-        InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager keyboard =
+                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         keyboard.showSoftInput(passwordInput, 0);
     }
 
@@ -176,7 +186,7 @@ public class AuthenticateActivity extends BackgroundTaskActivity<AuthenticationT
         passwordLayout.setEnabled(!isTaskRunning);
         passwordInput.setEnabled(!isTaskRunning);
         unlockButton.setEnabled(!isTaskRunning);
-        unlockButton.setVisibility(isTaskRunning? View.INVISIBLE : View.VISIBLE);
+        unlockButton.setVisibility(isTaskRunning ? View.INVISIBLE : View.VISIBLE);
         unlockProgress.setVisibility(isTaskRunning ? View.VISIBLE : View.GONE);
     }
 
@@ -196,14 +206,16 @@ public class AuthenticateActivity extends BackgroundTaskActivity<AuthenticationT
     }
 
     private void startAuthTask(String plainPassword) {
-        AuthenticationTask task = new AuthenticationTask(this, isAuthUpgrade, existingAuthCredentials, plainPassword);
+        AuthenticationTask task =
+                new AuthenticationTask(this, isAuthUpgrade, existingAuthCredentials, plainPassword);
         startBackgroundTask(task);
     }
 
     @Override
     void onTaskResult(Result result) {
         if (result.authUpgradeFailed) {
-            Toast.makeText(this, R.string.settings_toast_auth_upgrade_failed, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.settings_toast_auth_upgrade_failed, Toast.LENGTH_LONG)
+                    .show();
         }
         finishWithResult(result.encryptionKey != null, result.encryptionKey);
     }
@@ -212,10 +224,8 @@ public class AuthenticateActivity extends BackgroundTaskActivity<AuthenticationT
         Intent data = new Intent();
         if (newEncryption != null && !newEncryption.isEmpty())
             data.putExtra(Constants.EXTRA_AUTH_NEW_ENCRYPTION, newEncryption);
-        if (encryptionKey != null)
-            data.putExtra(Constants.EXTRA_AUTH_PASSWORD_KEY, encryptionKey);
-        if (success)
-            setResult(RESULT_OK, data);
+        if (encryptionKey != null) data.putExtra(Constants.EXTRA_AUTH_PASSWORD_KEY, encryptionKey);
+        if (success) setResult(RESULT_OK, data);
         finish();
     }
 

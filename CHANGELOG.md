@@ -4,11 +4,23 @@
 
  * Added Makefile with common development targets
  * Added CLAUDE.md documentation for Claude Code integration
- * Added CONTRIBUTING.md
+ * Added CONTRIBUTING.md with comprehensive development setup guide
  * Fixed Android 12+ compatibility issues in AndroidManifest.xml (b83baf99)
  * Fixed Java compilation errors for newer Android Gradle Plugin (6a5d9314)
  * Fixed Kotlin dependency conflicts and updated build configuration (44ea3501)
  * Updated Gradle build system to modern versions (4c5ab7cf)
+ * Added comprehensive Android emulator support with working commands (a06f38db)
+   - Create, start, install, and run app in emulator with single commands
+   - Configurable Android API level variable for easy updates (22497aea)
+   - Complete emulator workflow: `make emulator-test-full`
+ * Updated GitHub Actions workflow for modern build system (6d72666e)
+   - Multi-Java version testing (Java 17 minimum, Java 21 newer) (ac56f413)
+   - Updated to latest action versions and improved artifact handling
+ * Added comprehensive Java and XML linting and formatting (38305e95, 46064065)
+   - Spotless formatter with Google Java Format (AOSP style)
+   - Checkstyle linter with comprehensive rule set
+   - XML formatting with consistent indentation
+   - New Makefile targets: `make format`, `make format-check`, `make checkstyle`
 
 #### v0.9.0.1
 

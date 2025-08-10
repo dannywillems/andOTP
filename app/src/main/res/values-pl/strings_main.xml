@@ -88,7 +88,7 @@
     <string name="dialog_label_confirm_password">Potwierdź hasło</string>
     <string name="dialog_msg_auth">Podaj swoje dane uwierzytelniające, aby uruchomić andOTP.</string>
     <string name="dialog_msg_confirm_delete">Czy na pewno chcesz usunąć konto „%1$s”?</string>
-    <string name="dialog_msg_used_tokens">andOTP będzie śledzić, kiedy użyjesz swoich tokenów (używając funkcji        
+    <string name="dialog_msg_used_tokens">andOTP będzie śledzić, kiedy użyjesz swoich tokenów (używając funkcji
         \"Kliknij, aby odkryć\" lub kopiując do schowka), aby móc je posortować według \"Najczęściej
         używanych\" lub \"Ostatnio używanych\".\n\nTa wiadomość nie będzie ponownie wyświetlana.</string>
     <string name="dialog_msg_keystore_error">Nie udało się wczytać klucza szyfrowania z KeyStore. <b>Wszystkie nowo dodane konta zostaną utracone.</b>\n\nAby móc dalej korzystać z andOTP, należy przejść do <b>Ustawień</b> i zmienić opcję <b>Szyfrowanie bazy danych</b> na <b>Hasło / kod PIN</b>.</string>

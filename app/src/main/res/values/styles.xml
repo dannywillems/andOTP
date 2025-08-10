@@ -6,7 +6,7 @@
 
     <attr name="colorGithub" format="reference" />
     <attr name="thumbnailBackground" format="reference" />
-    
+
     <attr name="navigationBarColor" format="reference" />
 
     <attr name="colorExpiring" format="reference"/>

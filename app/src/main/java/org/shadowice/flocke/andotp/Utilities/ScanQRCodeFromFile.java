@@ -20,7 +20,6 @@
  * SOFTWARE.
  */
 
-
 package org.shadowice.flocke.andotp.Utilities;
 
 import android.content.Context;
@@ -28,7 +27,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.widget.Toast;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
@@ -41,13 +39,11 @@ import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
-
-import org.shadowice.flocke.andotp.R;
-
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Vector;
+import org.shadowice.flocke.andotp.R;
 
 public class ScanQRCodeFromFile {
 
@@ -66,14 +62,14 @@ public class ScanQRCodeFromFile {
         HINTS_HARDER.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
     }
 
-
     public static String scanQRImage(Context context, Uri uri) {
-        //Check if external storage is accessible
+        // Check if external storage is accessible
         if (!Tools.isExternalStorageReadable()) {
-            Toast.makeText(context, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.backup_toast_storage_not_accessible, Toast.LENGTH_LONG)
+                    .show();
             return null;
         }
-        //Get image in bytes
+        // Get image in bytes
         byte[] imageInBytes;
         try {
             imageInBytes = StorageAccessHelper.loadFile(context, uri);
@@ -88,17 +84,17 @@ public class ScanQRCodeFromFile {
         int[] intArray = new int[bMap.getWidth() * bMap.getHeight()];
 
         bMap.getPixels(intArray, 0, bMap.getWidth(), 0, 0, bMap.getWidth(), bMap.getHeight());
-        LuminanceSource source = new RGBLuminanceSource(bMap.getWidth(), bMap.getHeight(), intArray);
+        LuminanceSource source =
+                new RGBLuminanceSource(bMap.getWidth(), bMap.getHeight(), intArray);
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
         Result result = null;
-
 
         QRCodeReader reader = new QRCodeReader();
         ReaderException savedException = null;
 
         try {
-            //Try finding QR code
+            // Try finding QR code
             result = reader.decode(bitmap, HINTS);
             contents = result.getText();
         } catch (ReaderException re) {
@@ -107,7 +103,7 @@ public class ScanQRCodeFromFile {
 
         if (contents == null) {
             try {
-                //Try finding QR code really hard
+                // Try finding QR code really hard
                 result = reader.decode(bitmap, HINTS_HARDER);
                 contents = result.getText();
             } catch (ReaderException re) {
@@ -117,20 +113,23 @@ public class ScanQRCodeFromFile {
 
         if (contents == null) {
             try {
-                throw savedException == null ? NotFoundException.getNotFoundInstance() : savedException;
+                throw savedException == null
+                        ? NotFoundException.getNotFoundInstance()
+                        : savedException;
             } catch (ChecksumException e) {
                 e.printStackTrace();
-                Toast.makeText(context, R.string.toast_qr_checksum_exception, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.toast_qr_checksum_exception, Toast.LENGTH_LONG)
+                        .show();
             } catch (FormatException e) {
                 e.printStackTrace();
                 Toast.makeText(context, R.string.toast_qr_format_error, Toast.LENGTH_LONG).show();
-            } catch (ReaderException e) {  // Including NotFoundException
+            } catch (ReaderException e) { // Including NotFoundException
                 e.printStackTrace();
                 Toast.makeText(context, R.string.toast_qr_error, Toast.LENGTH_LONG).show();
             }
         }
 
-        //Return QR code (if found)
+        // Return QR code (if found)
         return contents;
     }
 }

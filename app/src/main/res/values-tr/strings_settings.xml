@@ -55,7 +55,7 @@
     <string name="settings_title_enable_android_backup_service">Android sync\'i etkinleştir</string>
     <string name="settings_title_clear_keystore">KeyStore\'u temizle</string>
     <!-- Descriptions -->
-    <string name="settings_desc_tap_to_reveal">Varsayılan olarak OTP tokenlarını gizle, manuel olarak 
+    <string name="settings_desc_tap_to_reveal">Varsayılan olarak OTP tokenlarını gizle, manuel olarak
         açığa çıkarılmalarını gerektirir</string>
     <string name="settings_desc_tap_to_reveal_timeout">        Ortaya çıkarılan girdileri tekrar gizlemek için geçecek süreyi (saniye cinsinden) seçin</string>
     <string name="settings_desc_panic">Panik tetikleyici algılandığında ne yapılacağını seçin</string>
@@ -84,7 +84,7 @@
     <string name="settings_desc_focus_search_on_start">Uygulama açılır açılmaz arama menüsüne odaklan.</string>
     <string name="settings_desc_hide_issuer">Her kartın altındaki token veren site bilgisini gizle</string>
     <string name="settings_desc_backup_append_date">Önerilen yedek adına mevcut tarih ve saati ekleme</string>
-    <string name="settings_desc_backup_ask">Yedek yaratıldığında ya da 
+    <string name="settings_desc_backup_ask">Yedek yaratıldığında ya da
         kurtarıldığında her zaman dosya adı sor</string>
     <string name="settings_desc_backup_location">Varsayılan yedekleme konumu seçin</string>
     <string name="settings_desc_backup_location_set">Yedekleme konumu seçildi</string>
@@ -96,7 +96,7 @@
     <string name="settings_desc_backup_broadcasts">Hangi yedekleme tiplerinin Broadcast kullanan 3. parti uygulamalar
 ile yedeklenebileceğini seçin</string>
     <string name="settings_desc_openpgp_key_encrypt">Şifrelemede kullanılacak OpenPGP anahtarının e-posta adresi</string>
-    <string name="settings_desc_openpgp_verify">Şifrelenmiş yedekler sadece uygun anahtar ile 
+    <string name="settings_desc_openpgp_verify">Şifrelenmiş yedekler sadece uygun anahtar ile
         onaylanırsa içe aktarılır</string>
     <string name="settings_desc_special_features">Özel içerikleri devre dışı bırakmak için onayı kaldırın</string>
     <string name="settings_desc_enable_screenshot">Ana  ekranın ekran görüntüsü alınmasına izi ver
@@ -104,7 +104,7 @@ ile yedeklenebileceğini seçin</string>
     <string name="settings_desc_enable_android_backup_service">andOTP\'nin anahtar ve ayarları yedeklemek için Android\'in dahili yedekleme servisini kullanmasını etkinleştirir</string>
     <string name="settings_desc_clear_keystore">KeyStore\'dan iifreleme anahtarını silin</string>
     <!-- Toasts -->
-    <string name="settings_toast_auth_device_not_secure">Bu özelliğin 
+    <string name="settings_toast_auth_device_not_secure">Bu özelliğin
         kurulabilmesi için güvenli bir kilit ekranı gereklidir. (Ayarlar &gt; Güvenlik &gt; Ekran Kilidi)</string>
     <string name="settings_toast_password_empty">Boş bir şifreye izin verilmez, Kimlik Doğrulama özelliğini
         devre dışı bırakmak için \"Hiçbiri\" olarak ayarlayın!</string>
@@ -138,7 +138,7 @@ beklenmedik durumlar karşısında her zaman bir yedek barındırmak iyi bir al�
     <string name="settings_dialog_msg_clear_keystore_password">Bazı durumlarda KeyStore\'u temizlemek
         sorunu çözebilir. Bunu yanlızca ne yaptığınızı biliyorsanız yapmalısınız!\n\n<b>Veritabanı şifrelemesi</b>
         <b>Şifre / PIN</b> olarak ayarlandığından bunu yaparken herhangi bir veri
-        kaybetmemelisiniz(ancak yine de bir yedekleme yapmak iyi olur).\n\n<b>Gerçekten KeyStore\'u 
+        kaybetmemelisiniz(ancak yine de bir yedekleme yapmak iyi olur).\n\n<b>Gerçekten KeyStore\'u
         temizlemek istediğinizden emin misiniz?</b></string>
     <string name="settings_dialog_msg_clear_keystore_keystore">Bazı durumlarda KeyStore\'u temizlemek
         sorunu çözebilir. Bunu yanlızca ne yaptığınızı biliyorsanız yapmalısınız!\n

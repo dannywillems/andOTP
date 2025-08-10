@@ -24,7 +24,11 @@
 package org.shadowice.flocke.andotp.Database;
 
 import android.net.Uri;
-
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
 import org.json.JSONArray;
@@ -33,15 +37,12 @@ import org.json.JSONObject;
 import org.shadowice.flocke.andotp.Utilities.EntryThumbnail;
 import org.shadowice.flocke.andotp.Utilities.TokenCalculator;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
 public class Entry {
     public enum OTPType {
-        TOTP, HOTP, MOTP, STEAM
+        TOTP,
+        HOTP,
+        MOTP,
+        STEAM
     }
 
     private static final OTPType DEFAULT_TYPE = OTPType.TOTP;
@@ -85,9 +86,17 @@ public class Entry {
     private String pin = "";
     private long listId = 0;
 
-    public Entry(){}
+    public Entry() {}
 
-    public Entry(OTPType type, String secret, int period, int digits, String issuer, String label, TokenCalculator.HashAlgorithm algorithm, List<String> tags) {
+    public Entry(
+            OTPType type,
+            String secret,
+            int period,
+            int digits,
+            String issuer,
+            String label,
+            TokenCalculator.HashAlgorithm algorithm,
+            List<String> tags) {
         this.type = type;
         this.secret = new Base32().decode(secret.toUpperCase());
         this.period = period;
@@ -99,7 +108,15 @@ public class Entry {
         setThumbnailFromIssuer(issuer);
     }
 
-    public Entry(OTPType type, String secret, long counter, int digits, String issuer, String label, TokenCalculator.HashAlgorithm algorithm, List<String> tags) {
+    public Entry(
+            OTPType type,
+            String secret,
+            long counter,
+            int digits,
+            String issuer,
+            String label,
+            TokenCalculator.HashAlgorithm algorithm,
+            List<String> tags) {
         this.type = type;
         this.secret = new Base32().decode(secret.toUpperCase());
         this.counter = counter;
@@ -126,7 +143,7 @@ public class Entry {
         Uri uri = Uri.parse(contents);
         URL url = new URL(contents);
 
-        if(!url.getProtocol().equals("http")){
+        if (!url.getProtocol().equals("http")) {
             throw new Exception("Invalid Protocol");
         }
 
@@ -154,8 +171,7 @@ public class Entry {
 
         String label = "";
 
-        if (uri.getPath() != null)
-            label = getStrippedLabel(issuer, uri.getPath().substring(1));
+        if (uri.getPath() != null) label = getStrippedLabel(issuer, uri.getPath().substring(1));
 
         String period = uri.getQueryParameter("period");
         String digits = uri.getQueryParameter("digits");
@@ -179,10 +195,9 @@ public class Entry {
         this.issuer = issuer;
         this.label = label;
 
-        if (secret == null)
-            throw new Exception("Empty secret");
+        if (secret == null) throw new Exception("Empty secret");
 
-        if(type == OTPType.MOTP) {
+        if (type == OTPType.MOTP) {
             this.secret = secret.getBytes();
         } else {
             this.secret = new Base32().decode(secret.toUpperCase());
@@ -191,7 +206,10 @@ public class Entry {
         if (digits != null) {
             this.digits = Integer.parseInt(digits);
         } else {
-            this.digits = this.type == OTPType.STEAM ? TokenCalculator.STEAM_DEFAULT_DIGITS : TokenCalculator.TOTP_DEFAULT_DIGITS;
+            this.digits =
+                    this.type == OTPType.STEAM
+                            ? TokenCalculator.STEAM_DEFAULT_DIGITS
+                            : TokenCalculator.TOTP_DEFAULT_DIGITS;
         }
 
         if (algorithm != null) {
@@ -211,8 +229,7 @@ public class Entry {
         }
     }
 
-    public Entry (JSONObject jsonObj)
-            throws Exception {
+    public Entry(JSONObject jsonObj) throws Exception {
         this.secret = new Base32().decode(jsonObj.getString(JSON_SECRET).toUpperCase());
         this.label = jsonObj.getString(JSON_LABEL);
 
@@ -225,32 +242,31 @@ public class Entry {
 
         try {
             this.type = OTPType.valueOf(jsonObj.getString(JSON_TYPE));
-        } catch(Exception e) {
+        } catch (Exception e) {
             this.type = DEFAULT_TYPE;
         }
 
         try {
             this.period = jsonObj.getInt(JSON_PERIOD);
-        } catch(Exception e) {
-            if (type == OTPType.TOTP)
-                this.period = DEFAULT_PERIOD;
+        } catch (Exception e) {
+            if (type == OTPType.TOTP) this.period = DEFAULT_PERIOD;
         }
 
         try {
             this.counter = jsonObj.getLong(JSON_COUNTER);
         } catch (Exception e) {
-            if (type == OTPType.HOTP)
-                throw new Exception("missing counter for HOTP");
+            if (type == OTPType.HOTP) throw new Exception("missing counter for HOTP");
         }
 
         try {
             this.digits = jsonObj.getInt(JSON_DIGITS);
-        } catch(Exception e) {
+        } catch (Exception e) {
             this.digits = TokenCalculator.TOTP_DEFAULT_DIGITS;
         }
 
         try {
-            this.algorithm = TokenCalculator.HashAlgorithm.valueOf(jsonObj.getString(JSON_ALGORITHM));
+            this.algorithm =
+                    TokenCalculator.HashAlgorithm.valueOf(jsonObj.getString(JSON_ALGORITHM));
         } catch (Exception e) {
             this.algorithm = TokenCalculator.DEFAULT_ALGORITHM;
         }
@@ -258,7 +274,7 @@ public class Entry {
         this.tags = new ArrayList<>();
         try {
             JSONArray tagsArray = jsonObj.getJSONArray(JSON_TAGS);
-            for(int i = 0; i < tagsArray.length(); i++) {
+            for (int i = 0; i < tagsArray.length(); i++) {
                 this.tags.add(tagsArray.getString(i));
             }
         } catch (Exception e) {
@@ -266,8 +282,10 @@ public class Entry {
         }
 
         try {
-            this.thumbnail = EntryThumbnail.EntryThumbnails.valueOfIgnoreCase(jsonObj.getString(JSON_THUMBNAIL));
-        } catch(Exception e) {
+            this.thumbnail =
+                    EntryThumbnail.EntryThumbnails.valueOfIgnoreCase(
+                            jsonObj.getString(JSON_THUMBNAIL));
+        } catch (Exception e) {
             this.thumbnail = EntryThumbnail.EntryThumbnails.Default;
         }
 
@@ -294,15 +312,13 @@ public class Entry {
         jsonObj.put(JSON_ALGORITHM, algorithm.toString());
         jsonObj.put(JSON_THUMBNAIL, getThumbnail().name());
         jsonObj.put(JSON_LAST_USED, getLastUsed());
-        jsonObj.put(JSON_USED_FREQUENCY, getUsedFrequency() );
+        jsonObj.put(JSON_USED_FREQUENCY, getUsedFrequency());
 
-        if (type == OTPType.TOTP)
-            jsonObj.put(JSON_PERIOD, getPeriod());
-        else if (type == OTPType.HOTP)
-            jsonObj.put(JSON_COUNTER, getCounter());
+        if (type == OTPType.TOTP) jsonObj.put(JSON_PERIOD, getPeriod());
+        else if (type == OTPType.HOTP) jsonObj.put(JSON_COUNTER, getCounter());
 
         JSONArray tagsArray = new JSONArray();
-        for(String tag : tags){
+        for (String tag : tags) {
             tagsArray.put(tag);
         }
         jsonObj.put(JSON_TAGS, tagsArray);
@@ -328,15 +344,12 @@ public class Entry {
             default:
                 return null;
         }
-        Uri.Builder builder = new Uri.Builder()
-                .scheme("otpauth")
-                .authority(type)
-                .appendPath(this.label);
+        Uri.Builder builder =
+                new Uri.Builder().scheme("otpauth").authority(type).appendPath(this.label);
 
         if (this.type == OTPType.MOTP)
             builder.appendQueryParameter("secret", new String(this.secret));
-        else
-             builder.appendQueryParameter("secret", new Base32().encodeAsString(this.secret));
+        else builder.appendQueryParameter("secret", new Base32().encodeAsString(this.secret));
 
         if (this.issuer != null) {
             builder.appendQueryParameter("issuer", this.issuer);
@@ -365,7 +378,9 @@ public class Entry {
         return type == OTPType.TOTP || type == OTPType.STEAM || type == OTPType.MOTP;
     }
 
-    public boolean isCounterBased() { return type == OTPType.HOTP; }
+    public boolean isCounterBased() {
+        return type == OTPType.HOTP;
+    }
 
     public OTPType getType() {
         return type;
@@ -380,10 +395,8 @@ public class Entry {
     }
 
     public String getSecretEncoded() {
-        if (type == OTPType.MOTP)
-            return new String(secret);
-        else
-            return new String(new Base32().encode(secret));
+        if (type == OTPType.MOTP) return new String(secret);
+        else return new String(new Base32().encode(secret));
     }
 
     public void setSecret(byte[] secret) {
@@ -397,8 +410,7 @@ public class Entry {
     public void setIssuer(String issuer, boolean updateThumbnail) {
         this.issuer = issuer;
 
-        if (updateThumbnail && issuer != null)
-            setThumbnailFromIssuer(issuer);
+        if (updateThumbnail && issuer != null) setThumbnailFromIssuer(issuer);
     }
 
     public String getLabel() {
@@ -433,13 +445,21 @@ public class Entry {
         this.digits = digits;
     }
 
-    public List<String> getTags() { return tags; }
+    public List<String> getTags() {
+        return tags;
+    }
 
-    public void setTags(List<String> tags) { this.tags = tags; }
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
 
-    public EntryThumbnail.EntryThumbnails getThumbnail() { return thumbnail; }
+    public EntryThumbnail.EntryThumbnails getThumbnail() {
+        return thumbnail;
+    }
 
-    public void setThumbnail( EntryThumbnail.EntryThumbnails value) { thumbnail = value; }
+    public void setThumbnail(EntryThumbnail.EntryThumbnails value) {
+        thumbnail = value;
+    }
 
     public TokenCalculator.HashAlgorithm getAlgorithm() {
         return this.algorithm;
@@ -512,24 +532,28 @@ public class Entry {
 
             if (updateNow || counter > last_update) {
                 // Store the previous token so we don't have to recalculate it every time
-                if (currentOTP != null && !currentOTP.isEmpty())
-                    prevOTP = currentOTP;
-                else
-                    prevOTP = "";
+                if (currentOTP != null && !currentOTP.isEmpty()) prevOTP = currentOTP;
+                else prevOTP = "";
 
                 switch (type) {
                     case TOTP:
-                        currentOTP = TokenCalculator.TOTP_RFC6238(secret, period, digits, algorithm, 0);
+                        currentOTP =
+                                TokenCalculator.TOTP_RFC6238(secret, period, digits, algorithm, 0);
 
                         if (prevOTP == null || prevOTP.isEmpty())
-                            prevOTP = TokenCalculator.TOTP_RFC6238(secret, period, digits, algorithm, -1);
+                            prevOTP =
+                                    TokenCalculator.TOTP_RFC6238(
+                                            secret, period, digits, algorithm, -1);
 
                         break;
                     case STEAM:
-                        currentOTP = TokenCalculator.TOTP_Steam(secret, period, digits, algorithm, 0);
+                        currentOTP =
+                                TokenCalculator.TOTP_Steam(secret, period, digits, algorithm, 0);
 
                         if (prevOTP == null || prevOTP.isEmpty())
-                            prevOTP = TokenCalculator.TOTP_Steam(secret, period, digits, algorithm, -1);
+                            prevOTP =
+                                    TokenCalculator.TOTP_Steam(
+                                            secret, period, digits, algorithm, -1);
 
                         break;
                     case MOTP:
@@ -538,10 +562,14 @@ public class Entry {
                         if (currentPin.isEmpty()) {
                             currentOTP = MOTP_NO_PIN_CODE;
                         } else {
-                            currentOTP = TokenCalculator.MOTP(currentPin, new String(this.secret), time, 0);
+                            currentOTP =
+                                    TokenCalculator.MOTP(
+                                            currentPin, new String(this.secret), time, 0);
 
                             if (prevOTP == null || prevOTP.isEmpty())
-                                prevOTP = TokenCalculator.MOTP(currentPin, new String(this.secret), time, -1);
+                                prevOTP =
+                                        TokenCalculator.MOTP(
+                                                currentPin, new String(this.secret), time, -1);
                         }
 
                         break;
@@ -562,15 +590,17 @@ public class Entry {
     }
 
     /**
-     * Checks if the OTP is expiring. The color for the entry will be changed to red if the expiry time is less than or equal to 8 seconds
-     * COLOR_DEFAULT indicates that the OTP has not expired. In this case check if the OTP is about to expire. Update color to COLOR_RED if it's about to expire
-     * COLOR_RED indicates that the OTP is already about to expire. Don't check again.
-     * The color will be reset to COLOR_DEFAULT in {@link #updateOTP(boolean updateNow)} method
+     * Checks if the OTP is expiring. The color for the entry will be changed to red if the expiry
+     * time is less than or equal to 8 seconds COLOR_DEFAULT indicates that the OTP has not expired.
+     * In this case check if the OTP is about to expire. Update color to COLOR_RED if it's about to
+     * expire COLOR_RED indicates that the OTP is already about to expire. Don't check again. The
+     * color will be reset to COLOR_DEFAULT in {@link #updateOTP(boolean updateNow)} method
      *
-     * @return Return true only if the color has changed to red to save from unnecessary notifying dataset
-     * */
+     * @return Return true only if the color has changed to red to save from unnecessary notifying
+     *     dataset
+     */
     public boolean hasColorChanged() {
-        if(color == COLOR_DEFAULT){
+        if (color == COLOR_DEFAULT) {
             long time = System.currentTimeMillis() / 1000;
             if ((time % getPeriod()) > (getPeriod() - EXPIRY_TIME)) {
                 setColor(COLOR_RED);
@@ -583,10 +613,10 @@ public class Entry {
     private void setThumbnailFromIssuer(String issuer) {
         try {
             this.thumbnail = EntryThumbnail.EntryThumbnails.valueOfIgnoreCase(issuer);
-        } catch(Exception e) {
+        } catch (Exception e) {
             try {
                 this.thumbnail = EntryThumbnail.EntryThumbnails.valueOfFuzzy(issuer);
-            } catch(Exception e2) {
+            } catch (Exception e2) {
                 this.thumbnail = EntryThumbnail.EntryThumbnails.Default;
             }
         }
@@ -594,22 +624,20 @@ public class Entry {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
+        if (this == o) return true;
 
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Entry entry = (Entry) o;
 
-        return type == entry.type &&
-                period == entry.period &&
-                counter == entry.counter &&
-                digits == entry.digits &&
-                algorithm == entry.algorithm &&
-                Arrays.equals(secret, entry.secret) &&
-                Objects.equals(label, entry.label) &&
-                Objects.equals(issuer, entry.issuer);
+        return type == entry.type
+                && period == entry.period
+                && counter == entry.counter
+                && digits == entry.digits
+                && algorithm == entry.algorithm
+                && Arrays.equals(secret, entry.secret)
+                && Objects.equals(label, entry.label)
+                && Objects.equals(issuer, entry.issuer);
     }
 
     @Override
@@ -627,10 +655,8 @@ public class Entry {
 
     public static boolean validateSecret(String secret, OTPType type) {
         try {
-            if (type == OTPType.MOTP)
-                Hex.decodeHex(secret);
-            else
-                new Base32().decode(secret.toUpperCase());
+            if (type == OTPType.MOTP) Hex.decodeHex(secret);
+            else new Base32().decode(secret.toUpperCase());
         } catch (Exception e) {
             return false;
         }
@@ -640,6 +666,7 @@ public class Entry {
 
     /**
      * Returns the label with issuer prefix removed (if present)
+     *
      * @param issuer - Name of the issuer to remove from the label
      * @param label - Full label from which the issuer should be removed
      * @return - label with the issuer removed

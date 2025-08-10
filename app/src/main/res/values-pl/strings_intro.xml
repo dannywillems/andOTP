@@ -18,7 +18,7 @@
     <string name="intro_slide4_title_progress">Proszę czekać</string>
     <string name="intro_slide4_desc_failed">Nie udało się ustawić hasła, to wprowadzenie zostanie wyświetlone ponownie
         następnym razem!</string>
-    <string name="intro_slide4_desc">Twoje ustawienia zostały zapisane, możesz teraz 
+    <string name="intro_slide4_desc">Twoje ustawienia zostały zapisane, możesz teraz
         korzystać z <b>andOTP</b>!</string>
     <string name="intro_slide4_desc_progress">Twoje ustawienia są zapisywane, a klucz szyfrujący jest
         generowany, proszę czekać…</string>

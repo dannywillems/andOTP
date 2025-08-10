@@ -3,9 +3,9 @@
     <string name="backup_activity_title">النُّسَخ الإحتياطية</string>
     <string name="backup_title_replace">استبدال العناصر الموجودة</string>
     <string name="backup_desc_replace">عند التفعيل, سوف تستبدل النسخة التي تم استيرادها بجميع الإدخالات القديمة. عند التعطيل, الإدخالات القديمة ستدمج مع محتويات النسخة.</string>
-    <string name="backup_desc_openpgp_provider">تحتاج إلى تثبيت مزود أوبن بي جي بي وتفعيله 
+    <string name="backup_desc_openpgp_provider">تحتاج إلى تثبيت مزود أوبن بي جي بي وتفعيله
 في <b>الإعدادات</b> لاستعمال هذه الخاصية.</string>
-    <string name="backup_desc_openpgp_keyid">تحتاج إلى تحديد مفتاح أوبن بي جي بي في <b>الإعدادات</b> 
+    <string name="backup_desc_openpgp_keyid">تحتاج إلى تحديد مفتاح أوبن بي جي بي في <b>الإعدادات</b>
 قبل أن يمكنك إنشاء نسخ احتياطية مشفرة.</string>
     <!-- Dialogs -->
     <string name="backup_dialog_title_security_warning">تحذير الأمان</string>

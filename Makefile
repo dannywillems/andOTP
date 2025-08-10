@@ -65,8 +65,21 @@ uninstall: ## Uninstall app from connected device
 lint: ## Run Android lint checks
 	./gradlew lint
 
+# Code quality targets
+.PHONY: format
+format: ## Format Java and XML code using Spotless
+	./gradlew spotlessApply
+
+.PHONY: format-check
+format-check: ## Check code formatting without applying changes
+	./gradlew spotlessCheck
+
+.PHONY: checkstyle
+checkstyle: ## Run Checkstyle linter on Java code
+	./gradlew checkstyleMain
+
 .PHONY: check
-check: lint test ## Run all checks (lint + tests)
+check: lint checkstyle format-check test ## Run all checks (lint + checkstyle + format + tests)
 
 # Utility targets
 .PHONY: gradle-wrapper

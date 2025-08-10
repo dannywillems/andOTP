@@ -23,22 +23,20 @@
 
 package org.shadowice.flocke.andotp.Utilities;
 
-import java.util.regex.Pattern;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
-
+import java.util.regex.Pattern;
 import org.shadowice.flocke.andotp.R;
 
 public class EntryThumbnail {
-    public static Bitmap getThumbnailGraphic(Context context, String issuer, String label, int size, EntryThumbnails thumbnail) {
+    public static Bitmap getThumbnailGraphic(
+            Context context, String issuer, String label, int size, EntryThumbnails thumbnail) {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         if (thumbnail == EntryThumbnails.Default && size > 0) {
@@ -49,15 +47,22 @@ public class EntryThumbnail {
 
             try {
                 if (thumbnail.getAssetType() == AssetType.Vector) {
-                    Drawable drawable = AppCompatResources.getDrawable(context, thumbnail.getResource());
+                    Drawable drawable =
+                            AppCompatResources.getDrawable(context, thumbnail.getResource());
                     assert drawable != null; // The thumbnail should always have a drawable
-                    Bitmap bitmap = Bitmap.createBitmap(drawable.getMinimumWidth(), drawable.getMinimumHeight(), Bitmap.Config.ARGB_8888);
+                    Bitmap bitmap =
+                            Bitmap.createBitmap(
+                                    drawable.getMinimumWidth(),
+                                    drawable.getMinimumHeight(),
+                                    Bitmap.Config.ARGB_8888);
                     Canvas canvas = new Canvas(bitmap);
-                    drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+                    drawable.setBounds(
+                            0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
                     drawable.draw(canvas);
                     return bitmap;
                 } else {
-                    return BitmapFactory.decodeResource(context.getResources(), thumbnail.getResource());
+                    return BitmapFactory.decodeResource(
+                            context.getResources(), thumbnail.getResource());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -441,9 +446,11 @@ public class EntryThumbnail {
 
         public static EntryThumbnails valueOfFuzzy(String thumbnail) {
             for (EntryThumbnails entryThumbnails : values()) {
-                Pattern re = Pattern.compile("\\b" + Pattern.quote(entryThumbnails.name()) + "\\b", Pattern.CASE_INSENSITIVE);
-                if (re.matcher(thumbnail).find())
-	                return entryThumbnails;
+                Pattern re =
+                        Pattern.compile(
+                                "\\b" + Pattern.quote(entryThumbnails.name()) + "\\b",
+                                Pattern.CASE_INSENSITIVE);
+                if (re.matcher(thumbnail).find()) return entryThumbnails;
             }
             throw new IllegalArgumentException();
         }

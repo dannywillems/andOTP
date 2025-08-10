@@ -59,9 +59,9 @@
     <string name="settings_desc_tap_to_reveal_timeout">زمانی را انتخاب کنید که بعد از آن موارد آشکار شده دوباره پنهان شوند (به ثانیه)</string>
     <string name="settings_desc_panic">تصمیم بگیرید که چه اتفاقی بیوفتد، زمانی که ماشه هراس دریافت می‌شود</string>
     <string name="settings_desc_relock_screen_off">وقتی که صفحه نمایش خاموش شد، نیاز به احراز هویت داشته باش</string>
-    <string name="settings_desc_relock_background">نیاز به احراز هویت بعد از اینکه برنامه به پس زمینه 
+    <string name="settings_desc_relock_background">نیاز به احراز هویت بعد از اینکه برنامه به پس زمینه
         فرستاده شد.(برای مثال با فشردن دکمه خانه)</string>
-    <string name="settings_desc_auth_inactivity">نیاز به احراز هویت بعد از اینکه دستگاه 
+    <string name="settings_desc_auth_inactivity">نیاز به احراز هویت بعد از اینکه دستگاه
         بدون فعالیت بوده</string>
     <string name="settings_desc_auth_inactivity_delay">میزان زمانی (به ثانیه) که بعد از آن
         احراز هویت دوباره نیاز است را انتخاب کنید</string>

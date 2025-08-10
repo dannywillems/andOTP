@@ -3,9 +3,7 @@ package org.shadowice.flocke.andotp.Tasks;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-
 import androidx.annotation.NonNull;
-
 import org.shadowice.flocke.andotp.Utilities.StorageAccessHelper;
 
 public class PGPRestoreTask extends GenericRestoreTask {
@@ -21,6 +19,7 @@ public class PGPRestoreTask extends GenericRestoreTask {
     protected BackupTaskResult doInBackground() {
         String data = StorageAccessHelper.loadFileString(applicationContext, uri);
 
-        return new BackupTaskResult(BackupTaskResult.ResultType.RESTORE,true, data, 0, true, decryptIntent, uri);
+        return new BackupTaskResult(
+                BackupTaskResult.ResultType.RESTORE, true, data, 0, true, decryptIntent, uri);
     }
 }

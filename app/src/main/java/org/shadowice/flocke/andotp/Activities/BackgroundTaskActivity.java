@@ -2,17 +2,15 @@ package org.shadowice.flocke.andotp.Activities;
 
 import android.app.Fragment;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
-
 import org.shadowice.flocke.andotp.Tasks.UiBasedBackgroundTask;
 
 public abstract class BackgroundTaskActivity<Result> extends BaseActivity {
-    final protected String TAG_TASK_FRAGMENT = this.getClass().getSimpleName() + ".TaskFragment";
+    protected final String TAG_TASK_FRAGMENT = this.getClass().getSimpleName() + ".TaskFragment";
 
     private ProcessLifecycleObserver observer = null;
 
@@ -37,16 +35,14 @@ public abstract class BackgroundTaskActivity<Result> extends BaseActivity {
         if (cancelTaskOnScreenOff()) {
             observer = new ProcessLifecycleObserver();
 
-            ProcessLifecycleOwner.get().getLifecycle()
-                    .addObserver(observer);
+            ProcessLifecycleOwner.get().getLifecycle().addObserver(observer);
         }
     }
 
     @Override
     protected void onDestroy() {
         if (observer != null) {
-            ProcessLifecycleOwner.get().getLifecycle()
-                    .removeObserver(observer);
+            ProcessLifecycleOwner.get().getLifecycle().removeObserver(observer);
 
             observer = null;
         }
@@ -64,18 +60,17 @@ public abstract class BackgroundTaskActivity<Result> extends BaseActivity {
     protected void onPause() {
         super.onPause();
 
-        // We don't want the task to callback to a dead activity and cause a memory leak, so null it here.
+        // We don't want the task to callback to a dead activity and cause a memory leak, so null it
+        // here.
         TaskFragment<Result> taskFragment = findTaskFragment();
 
-        if (taskFragment != null)
-            taskFragment.setCallback(null);
+        if (taskFragment != null) taskFragment.setCallback(null);
     }
 
     protected void cancelBackgroundTask() {
         TaskFragment<Result> taskFragment = findTaskFragment();
 
-        if (taskFragment != null)
-            taskFragment.cancelTask();
+        if (taskFragment != null) taskFragment.cancelTask();
 
         setupUiForTaskState(false);
     }
@@ -110,9 +105,7 @@ public abstract class BackgroundTaskActivity<Result> extends BaseActivity {
         TaskFragment<Result> taskFragment = findTaskFragment();
 
         if (taskFragment != null) {
-            getFragmentManager().beginTransaction()
-                    .remove(taskFragment)
-                    .commit();
+            getFragmentManager().beginTransaction().remove(taskFragment).commit();
         }
     }
 
@@ -122,9 +115,7 @@ public abstract class BackgroundTaskActivity<Result> extends BaseActivity {
         if (taskFragment != null) {
             if (taskFragment.isCanceled()) {
                 // The task was canceled, so remove the task fragment
-                getFragmentManager().beginTransaction()
-                        .remove(taskFragment)
-                        .commit();
+                getFragmentManager().beginTransaction().remove(taskFragment).commit();
 
                 onReturnToCanceledTask();
 
@@ -144,17 +135,14 @@ public abstract class BackgroundTaskActivity<Result> extends BaseActivity {
     private TaskFragment<Result> findTaskFragment() {
         Fragment fragment = getFragmentManager().findFragmentByTag(TAG_TASK_FRAGMENT);
 
-        if (fragment instanceof TaskFragment)
-            return (TaskFragment<Result>) fragment;
-        else
-            return null;
+        if (fragment instanceof TaskFragment) return (TaskFragment<Result>) fragment;
+        else return null;
     }
 
     private class ProcessLifecycleObserver implements DefaultLifecycleObserver {
         @Override
         public void onStop(@NonNull LifecycleOwner owner) {
-            if (cancelTaskOnScreenOff())
-                cancelBackgroundTask();
+            if (cancelTaskOnScreenOff()) cancelBackgroundTask();
         }
     }
 
@@ -172,20 +160,16 @@ public abstract class BackgroundTaskActivity<Result> extends BaseActivity {
         }
 
         public void setCallback(@Nullable UiBasedBackgroundTask.UiCallback<Result> callback) {
-            if (this.task != null)
-                this.task.setCallback(callback);
+            if (this.task != null) this.task.setCallback(callback);
         }
 
         public boolean isCanceled() {
-            if (task != null)
-                return task.isCanceled();
-            else
-                return true;
+            if (task != null) return task.isCanceled();
+            else return true;
         }
 
         public void cancelTask() {
-            if (task != null)
-                task.cancel();
+            if (task != null) task.cancel();
         }
     }
 }

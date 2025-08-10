@@ -30,7 +30,7 @@
         la próxima vez!</string>
     <string name="intro_slide4_desc">Tu configuración ha sido almacenada, ¡Ya estás listo
         para usar <b>andOTP</b>!</string>
-    <string name="intro_slide4_desc_progress">Se están guardando los ajustes y se está generando la clave 
+    <string name="intro_slide4_desc_progress">Se están guardando los ajustes y se está generando la clave
         de cifrado, por favor espere…</string>
     <string name="intro_slide_android_backup_desc">La sincronización de Android es una característica incorporada de android usada para hacer copias de seguridad de los datos de la aplicación a un servicio de terceros (por lo general Google). Las copias de seguridad siempre son cifradas e inaccesibles para terceros sin su contraseña maestra. Requiere el uso del método de cifrado de contraseña.</string>
 </resources>

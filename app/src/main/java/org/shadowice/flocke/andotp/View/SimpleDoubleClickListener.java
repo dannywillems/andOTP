@@ -36,25 +36,26 @@ public abstract class SimpleDoubleClickListener implements View.OnClickListener 
         long clickTime = System.currentTimeMillis();
 
         if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
-            if (firstTap)
-                onDoubleClick(v);
+            if (firstTap) onDoubleClick(v);
 
             firstTap = false;
         } else {
             firstTap = true;
 
-            v.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (firstTap)
-                        onSingleClick(v);
-                }
-            }, DOUBLE_CLICK_TIME_DELTA);
+            v.postDelayed(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            if (firstTap) onSingleClick(v);
+                        }
+                    },
+                    DOUBLE_CLICK_TIME_DELTA);
         }
 
         lastClickTime = clickTime;
     }
 
     public abstract void onSingleClick(View v);
+
     public abstract void onDoubleClick(View v);
 }

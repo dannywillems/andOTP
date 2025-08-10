@@ -9,12 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.NumberPicker;
-
 import org.shadowice.flocke.andotp.R;
 
-/**
- * A {@link android.preference.Preference} that displays a number picker as a dialog.
- */
+/** A {@link android.preference.Preference} that displays a number picker as a dialog. */
 public class NumberPickerPreference extends DialogPreference {
 
     public static final int DEFAULT_MAX_VALUE = 100;
@@ -36,16 +33,22 @@ public class NumberPickerPreference extends DialogPreference {
     public NumberPickerPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberPickerPreference);
+        final TypedArray a =
+                context.obtainStyledAttributes(attrs, R.styleable.NumberPickerPreference);
         minValue = a.getInteger(R.styleable.NumberPickerPreference_minValue, DEFAULT_MIN_VALUE);
         maxValue = a.getInteger(R.styleable.NumberPickerPreference_maxValue, DEFAULT_MAX_VALUE);
-        wrapSelectorWheel = a.getBoolean(R.styleable.NumberPickerPreference_wrapSelectorWheel, DEFAULT_WRAP_SELECTOR_WHEEL);
+        wrapSelectorWheel =
+                a.getBoolean(
+                        R.styleable.NumberPickerPreference_wrapSelectorWheel,
+                        DEFAULT_WRAP_SELECTOR_WHEEL);
         a.recycle();
     }
 
     @Override
     protected View onCreateDialogView() {
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams layoutParams =
+                new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
 
         picker = new NumberPicker(getContext());
@@ -84,7 +87,8 @@ public class NumberPickerPreference extends DialogPreference {
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        int initialValue = restorePersistedValue ? getPersistedInt(minValue) : (Integer) defaultValue;
+        int initialValue =
+                restorePersistedValue ? getPersistedInt(minValue) : (Integer) defaultValue;
 
         setValue(initialValue);
         setSummary(String.valueOf(initialValue));

@@ -24,20 +24,18 @@
 package org.shadowice.flocke.andotp.View;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
-
-import org.shadowice.flocke.andotp.Database.Entry;
-import org.shadowice.flocke.andotp.Utilities.Settings;
-
+import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import org.shadowice.flocke.andotp.Database.Entry;
+import org.shadowice.flocke.andotp.Utilities.Settings;
 
 public class TagsAdapter extends ArrayAdapter<String> {
     private Context context;
@@ -59,8 +57,11 @@ public class TagsAdapter extends ArrayAdapter<String> {
     public View getView(int i, View view, @NonNull ViewGroup viewGroup) {
         CheckedTextView checkedTextView;
         if (view == null) {
-            checkedTextView = (CheckedTextView)LayoutInflater.from(context).inflate(layoutResourceId, viewGroup, false);
-        } else{
+            checkedTextView =
+                    (CheckedTextView)
+                            LayoutInflater.from(context)
+                                    .inflate(layoutResourceId, viewGroup, false);
+        } else {
             checkedTextView = (CheckedTextView) view;
         }
         checkedTextView.setText(tagsOrder.get(i));
@@ -74,22 +75,19 @@ public class TagsAdapter extends ArrayAdapter<String> {
     }
 
     public Boolean getTagState(String tag) {
-        if(tagsState.containsKey(tag))
-            return tagsState.get(tag);
+        if (tagsState.containsKey(tag)) return tagsState.get(tag);
         return false;
     }
 
     public void setTagState(String tag, Boolean state) {
-        if(tagsState.containsKey(tag))
-            tagsState.put(tag, state);
+        if (tagsState.containsKey(tag)) tagsState.put(tag, state);
         notifyDataSetChanged();
     }
 
     public List<String> getActiveTags() {
         List<String> tagsList = new ArrayList<>();
-        for(String tag : tagsOrder)
-        {
-            if(tagsState.get(tag)) {
+        for (String tag : tagsOrder) {
+            if (tagsState.get(tag)) {
                 tagsList.add(tag);
             }
         }
@@ -97,9 +95,7 @@ public class TagsAdapter extends ArrayAdapter<String> {
     }
 
     public boolean allTagsActive() {
-        for (String key : tagsState.keySet())
-            if (! tagsState.get(key))
-                return false;
+        for (String key : tagsState.keySet()) if (!tagsState.get(key)) return false;
 
         return true;
     }
@@ -118,12 +114,12 @@ public class TagsAdapter extends ArrayAdapter<String> {
         notifyDataSetChanged();
     }
 
-    public static HashMap<String, Boolean> createTagsMap(ArrayList<Entry> entries, Settings settings) {
+    public static HashMap<String, Boolean> createTagsMap(
+            ArrayList<Entry> entries, Settings settings) {
         HashMap<String, Boolean> tagsHashMap = new HashMap<>();
 
-        for(Entry entry : entries) {
-            for(String tag : entry.getTags())
-                tagsHashMap.put(tag, settings.getTagToggle(tag));
+        for (Entry entry : entries) {
+            for (String tag : entry.getTags()) tagsHashMap.put(tag, settings.getTagToggle(tag));
         }
 
         return tagsHashMap;

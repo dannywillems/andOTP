@@ -2,10 +2,8 @@ package org.shadowice.flocke.andotp.Tasks;
 
 import android.content.Context;
 import android.net.Uri;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import org.shadowice.flocke.andotp.R;
 import org.shadowice.flocke.andotp.Utilities.BackupHelper;
 import org.shadowice.flocke.andotp.Utilities.Constants;
@@ -19,7 +17,9 @@ public abstract class GenericBackupTask extends UiBasedBackgroundTask<BackupTask
     protected Uri uri;
 
     public GenericBackupTask(Context context, @Nullable Uri uri) {
-        super(BackupTaskResult.failure(BackupTaskResult.ResultType.BACKUP, R.string.backup_toast_export_failed));
+        super(
+                BackupTaskResult.failure(
+                        BackupTaskResult.ResultType.BACKUP, R.string.backup_toast_export_failed));
 
         this.applicationContext = context.getApplicationContext();
         this.settings = new Settings(applicationContext);
@@ -34,10 +34,12 @@ public abstract class GenericBackupTask extends UiBasedBackgroundTask<BackupTask
         String fileName;
 
         if (uri == null) {
-            BackupHelper.BackupFile backupFile = BackupHelper.backupFile(applicationContext, settings.getBackupLocation(), type);
+            BackupHelper.BackupFile backupFile =
+                    BackupHelper.backupFile(applicationContext, settings.getBackupLocation(), type);
 
             if (backupFile.file == null)
-                return new BackupTaskResult(BackupTaskResult.ResultType.BACKUP,false, null, backupFile.errorMessage);
+                return new BackupTaskResult(
+                        BackupTaskResult.ResultType.BACKUP, false, null, backupFile.errorMessage);
 
             uri = backupFile.file.getUri();
             fileName = backupFile.file.getName();
@@ -47,13 +49,14 @@ public abstract class GenericBackupTask extends UiBasedBackgroundTask<BackupTask
 
         boolean success = doBackup();
 
-        if (success)
-            return BackupTaskResult.success(BackupTaskResult.ResultType.BACKUP ,fileName);
+        if (success) return BackupTaskResult.success(BackupTaskResult.ResultType.BACKUP, fileName);
         else
-            return BackupTaskResult.failure(BackupTaskResult.ResultType.BACKUP, R.string.backup_toast_export_failed);
+            return BackupTaskResult.failure(
+                    BackupTaskResult.ResultType.BACKUP, R.string.backup_toast_export_failed);
     }
 
     @NonNull
     protected abstract Constants.BackupType getBackupType();
+
     protected abstract boolean doBackup();
 }

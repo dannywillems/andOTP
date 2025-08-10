@@ -33,38 +33,42 @@ public class UIHelper {
         showGenericDialog(context, titleId, messageId, null);
     }
 
-    public static void showGenericDialog(Context context, int titleId, int messageId, final Runnable onOk) {
+    public static void showGenericDialog(
+            Context context, int titleId, int messageId, final Runnable onOk) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(titleId)
                 .setMessage(messageId)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(onOk != null)
-                            onOk.run();
-                    }
-                })
+                .setPositiveButton(
+                        android.R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (onOk != null) onOk.run();
+                            }
+                        })
                 .create()
                 .show();
     }
 
-    public static void showKeyboard(Context context, View view){
-        showKeyboard(context,view,false);
+    public static void showKeyboard(Context context, View view) {
+        showKeyboard(context, view, false);
     }
 
     public static void showKeyboard(Context context, View view, Boolean showForced) {
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-            if(showForced)
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-            else
-                imm.showSoftInput(view, 0);
+            InputMethodManager imm =
+                    (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (showForced)
+                imm.toggleSoftInput(
+                        InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+            else imm.showSoftInput(view, 0);
         }
     }
 
     public static void hideKeyboard(Context context, View view) {
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm =
+                    (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }

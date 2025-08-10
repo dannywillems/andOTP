@@ -54,11 +54,17 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x gradlew
 
+    - name: Check code formatting
+      run: make format-check
+
+    - name: Run Checkstyle linter
+      run: make checkstyle
+
     - name: Build debug APK
       run: make build-debug
 
-    - name: Run checks
-      run: make check
+    - name: Run Android lint
+      run: make lint
 
     - name: Run tests
       run: make test
@@ -68,6 +74,13 @@ jobs:
       with:
         name: debug-apk-java-${{ matrix.java-version }}
         path: app/build/outputs/apk/fdroid/debug/*.apk
+
+    - name: Upload Checkstyle results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: checkstyle-results-java-${{ matrix.java-version }}
+        path: app/build/reports/checkstyle/*.html
 
     - name: Upload lint results
       uses: actions/upload-artifact@v4
