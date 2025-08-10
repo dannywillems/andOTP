@@ -207,10 +207,9 @@ make emulator-stop
 - Hardware acceleration (Intel HAXM on Intel, or Android Emulator Hypervisor Driver)
 
 **Troubleshooting:**
-- If emulator creation fails, try the simpler fallback: `make emulator-create-simple`
-- If still failing, manually install system image: 
+- If emulator creation fails, manually install system image: 
   ```bash
-  sdkmanager "system-images;android-34;google_apis;x86_64"
+  sdkmanager "system-images;android-35;google_apis;x86_64"
   ```
 - For better performance, enable hardware acceleration in your BIOS/UEFI
 - Use `make device-list` to check if emulator is detected
