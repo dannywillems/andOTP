@@ -1,0 +1,26 @@
+{
+  "name": "andotp",
+  "version": "0.9.0.1",
+  "description": "andOTP Android development tools",
+  "private": true,
+  "scripts": {
+    "format-md": "prettier --write \"**/*.md\"",
+    "check-md": "prettier --check \"**/*.md\"",
+    "install-dev": "npm install"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": false,
+    "singleQuote": false,
+    "quoteProps": "as-needed",
+    "trailingComma": "none",
+    "bracketSpacing": true,
+    "proseWrap": "preserve",
+    "endOfLine": "lf"
+  }
+}
