@@ -138,6 +138,13 @@ make install-debug
 
 # Clean build artifacts
 make clean
+
+# Emulator targets
+make emulator-list        # List available emulators
+make emulator-create      # Create a new test emulator
+make emulator-start       # Start the test emulator
+make emulator-run         # Build, install, and run app in emulator
+make emulator-test-full   # Complete workflow: start emulator and run app
 ```
 
 **Alternative Gradle Commands:**
@@ -169,6 +176,45 @@ andOTP has two build flavors:
 make build-fdroid-debug
 make build-play-release
 ```
+
+### Testing with Android Emulator
+
+The easiest way to test andOTP is using an Android emulator:
+
+**Quick Start:**
+```bash
+# Create and start emulator, build and run app (one command)
+make emulator-test-full
+```
+
+**Step by Step:**
+```bash
+# 1. Create a new emulator (only needed once)
+make emulator-create
+
+# 2. Start the emulator
+make emulator-start
+
+# 3. Build, install and run the app
+make emulator-run
+
+# 4. Stop emulator when done
+make emulator-stop
+```
+
+**Prerequisites for Emulator:**
+- Android SDK with system images: `sdkmanager "system-images;android-35;google_apis;x86_64"`
+- Hardware acceleration (Intel HAXM on Intel, or Android Emulator Hypervisor Driver)
+
+**Troubleshooting:**
+- If emulator creation fails, try the simpler fallback: `make emulator-create-simple`
+- If still failing, manually install system image: 
+  ```bash
+  sdkmanager "system-images;android-34;google_apis;x86_64"
+  ```
+- For better performance, enable hardware acceleration in your BIOS/UEFI
+- Use `make device-list` to check if emulator is detected
+- Use `make emulator-delete` to remove existing emulator if needed
 
 ## Contributing Guidelines
 
