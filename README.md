@@ -8,11 +8,11 @@
 
 ![andOTP](./assets/logo.png)
 
-## Unmaintained
+## Maintenance Status
 
-**This repository is currently unmaintained.**
+**This repository is now being unofficially maintained by [@dannywillems](https://github.com/dannywillems).**
 
-See [this XDA post](https://forum.xda-developers.com/t/app-4-4-open-source-andotp-open-source-two-factor-authentication-for-android.3636993/post-87021655) for more details.
+The original maintainer stepped down ([XDA post](https://forum.xda-developers.com/t/app-4-4-open-source-andotp-open-source-two-factor-authentication-for-android.3636993/post-87021655)), but development has resumed with modernized build system, code quality improvements, and ongoing maintenance.
 
 ## Intro
 
@@ -26,8 +26,7 @@ which has sadly been inactive since 2015. By now almost every aspect of the app 
 detached upon [user request](https://github.com/andOTP/andOTP/issues/145). But all credit for the original version and for starting this project still goes to Bruno!
 
 ## Help wanted:
-I currently don't have that much time to spend developing andOTP, so any contributions are always welcome.
-Don't worry, I will still continue to develop andOTP it will just slow down from the incredible speed I had going in the beginning.
+Contributions are always welcome! The project is actively maintained and we're working on modernizing the codebase, improving code quality, and adding new features. See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 
 ## Features:
 

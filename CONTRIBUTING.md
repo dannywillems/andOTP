@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing to andOTP! This guide will help you get started with development.
 
-**⚠️ Important Notice**: This repository is currently unmaintained. While contributions are welcome, please be aware that maintenance and review may be limited.
+**✅ Maintenance Status**: This repository is now being unofficially maintained by [@dannywillems](https://github.com/dannywillems). Contributions are actively reviewed and the project is under active development with ongoing modernization efforts.
 
 ## Table of Contents
 

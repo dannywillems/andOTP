@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 andOTP is an open-source two-factor authentication (2FA) Android app written in Java. It supports TOTP (Time-based One-time Passwords) and HOTP (HMAC-based One-time Passwords) with encrypted local storage and multiple backup options.
 
-**Important**: This repository is currently unmaintained as of the latest commit.
+**Important**: This repository is now being unofficially maintained by [@dannywillems](https://github.com/dannywillems), with active development focusing on modernizing the build system, improving code quality, and maintaining compatibility.
 
 ## Build System
 
