@@ -91,7 +91,7 @@ dependencies {
     implementation "com.mikepenz:aboutlibraries:6.2.3" // Supporting a newer version will need some work
 
     androidTestImplementation "androidx.test.espresso:espresso-core:3.7.0"
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }
 
 // Code formatting and linting configuration
