@@ -1,6 +1,7 @@
 name: CI
 
-# Updated for modern Android build system (AGP 8.7.3, Gradle 8.11.1, Java 17)
+# Updated for modern Android build system (AGP 8.7.3, Gradle 8.11.1, Java 17+)
+# Tests multiple Java versions: 17 (minimum required), 21 (newer)
 # See commits: b83baf99, 6a5d9314, 44ea3501, 4c5ab7cf
 
 on:
@@ -12,10 +13,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: Build with Java ${{ matrix.java-version }}
 
     strategy:
       matrix:
-        java-version: [17]
+        java-version: [17, 21]
+      fail-fast: false
     
     env:
       GRADLE_OPTS: -Dorg.gradle.daemon=false
@@ -63,19 +66,19 @@ jobs:
     - name: Upload APK artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: debug-apk
+        name: debug-apk-java-${{ matrix.java-version }}
         path: app/build/outputs/apk/fdroid/debug/*.apk
 
     - name: Upload lint results
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: lint-results
+        name: lint-results-java-${{ matrix.java-version }}
         path: app/build/reports/lint-results*.html
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: test-results
+        name: test-results-java-${{ matrix.java-version }}
         path: app/build/reports/tests/
