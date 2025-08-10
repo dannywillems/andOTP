@@ -79,6 +79,9 @@ jobs:
     - name: Build debug APK
       run: make build-debug
 
+    - name: Build release APK
+      run: make build-release
+
     - name: Run Android lint
       run: make lint
 
