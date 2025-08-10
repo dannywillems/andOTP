@@ -15,12 +15,23 @@
   - Complete emulator workflow: `make emulator-test-full`
 - Updated GitHub Actions workflow for modern build system (6d72666e)
   - Multi-Java version testing (Java 17 minimum, Java 21 newer) (ac56f413)
+  - Multi-platform testing (Ubuntu x86_64/ARM64, macOS) (c1e09f2e)
   - Updated to latest action versions and improved artifact handling
 - Added comprehensive Java and XML linting and formatting (38305e95, 46064065)
   - Spotless formatter with Google Java Format (AOSP style)
   - Checkstyle linter with comprehensive rule set
   - XML formatting with consistent indentation
   - New Makefile targets: `make format`, `make format-check`, `make checkstyle`
+- Added trailing whitespace detection and markdown formatting support
+  - New Makefile targets: `make fix-trailing-whitespace`, `make check-trailing-whitespace`
+  - Markdown formatting with Prettier: `make format-md`, `make check-md`
+  - Integrated formatting and whitespace checks into CI pipeline
+- Updated project maintenance status to reflect active unofficial maintenance
+- Dependency updates via Dependabot:
+  - Kotlin stdlib: 1.8.10 → 2.2.0 (4f71a9bd)
+  - androidx.recyclerview: 1.2.0 → 1.4.0 (1b871a84)  
+  - androidx.test.espresso: 3.3.0 → 3.7.0 (b8e3540a)
+  - androidx.media: 1.3.0 → 1.7.0 (1cbc8557)
 
 #### v0.9.0.1
 
