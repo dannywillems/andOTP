@@ -4,6 +4,11 @@
 
  * Added Makefile with common development targets
  * Added CLAUDE.md documentation for Claude Code integration
+ * Added CONTRIBUTING.md
+ * Fixed Android 12+ compatibility issues in AndroidManifest.xml (b83baf99)
+ * Fixed Java compilation errors for newer Android Gradle Plugin (6a5d9314)
+ * Fixed Kotlin dependency conflicts and updated build configuration (44ea3501)
+ * Updated Gradle build system to modern versions (4c5ab7cf)
 
 #### v0.9.0.1
 
