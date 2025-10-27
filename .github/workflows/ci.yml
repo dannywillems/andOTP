@@ -89,27 +89,27 @@ jobs:
       run: make test
 
     - name: Upload APK artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: debug-apk-java-${{ matrix.java-version }}-${{ matrix.os }}
         path: app/build/outputs/apk/fdroid/debug/*.apk
 
     - name: Upload Checkstyle results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: checkstyle-results-java-${{ matrix.java-version }}-${{ matrix.os }}
         path: app/build/reports/checkstyle/*.html
 
     - name: Upload lint results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: lint-results-java-${{ matrix.java-version }}-${{ matrix.os }}
         path: app/build/reports/lint-results*.html
 
     - name: Upload test results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: test-results-java-${{ matrix.java-version }}-${{ matrix.os }}
