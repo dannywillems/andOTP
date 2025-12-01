@@ -9,7 +9,7 @@
     "install-dev": "npm install"
   },
   "devDependencies": {
-    "prettier": "^3.0.0"
+    "prettier": "^3.7.3"
   },
   "prettier": {
     "printWidth": 80,
